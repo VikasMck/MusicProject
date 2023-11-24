@@ -1,0 +1,75 @@
+body {
+    margin: 0;
+}
+
+
+/* This is for the changing WELCOME text */
+
+
+#text1,
+#text2 {
+    display: inline-block;
+    font-size: 4vw; 
+    text-align: center;
+}
+
+#text1 {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translate(0, -50%);
+    width: 100%;
+}
+
+#text2 {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translate(0, -50%);
+    width: 100%;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+/* Media queries for responsiveness */
+@media (max-width: 600px) {
+    #container {
+        width: 90%;
+    }
+
+    #text1,
+    #text2 {
+        font-size: 5vw;
+    }
+}
+
+
+/* This makes the text glow */
+
+.glow {
+    font-size: 80px;
+    color: #fff;
+    text-align: center;
+    animation: glow 1s ease-in-out infinite alternate;
+  }
+  
+ @keyframes glow {
+    from {
+        text-shadow: 0 0 20px #ccc, 0 0 30px #999, 0 0 40px #666, 0 0 50px #333, 0 0 60px #111, 0 0 70px #000, 0 0 80px #000;
+    }
+    
+    to {
+        text-shadow: 0 0 20px #ccc, 0 0 30px #999, 0 0 40px #666, 0 0 50px #333, 0 0 60px #111, 0 0 70px #000, 0 0 80px #000;
+    }
+    
+}
+
+/*  background */
+
+.convertcolour {
+    background: linear-gradient(to bottom, #1DB954, #FF0000);
+    padding: 64px 0;
+    color: #fff;
+    text-align: center;
+}
+
