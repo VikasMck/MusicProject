@@ -3,7 +3,22 @@ Project for Web Dev class
 
 
 Languages:
-React, HMLT, CSS, JS
+HTML, CSS, JS, EJS
+
+
+Packages:
+    Axious
+    Bcrypt
+    googleapis
+    dotenv
+    ejs
+    express
+    mssql
+    body-parser
+    express-session
+    path
+    fs
+
 
 DB: SQL Server
 

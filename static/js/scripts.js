@@ -1,3 +1,5 @@
+
+//fun morphing text style
 const elts = {
     text1: document.getElementById("text1"),
     text2: document.getElementById("text2")
@@ -100,7 +102,7 @@ animate();
 // template
 
 
-// Used to toggle the menu on small screens when clicking on the menu button
+//resposive
 function myFunction() {
   var x = document.getElementById("navDemo");
   if (x.className.indexOf("w3-show") == -1) {
@@ -110,8 +112,8 @@ function myFunction() {
   }
 }
 
-// When the user clicks anywhere outside of the modal, close it
-var modal = document.getElementById('ticketModal');
+//if user cant click x, click anywhere
+var modal = document.getElementById('loginRegisterModal');
 window.onclick = function(event) {
   if (event.target == modal) {
     modal.style.display = "none";

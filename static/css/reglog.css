@@ -1,0 +1,89 @@
+.log-body {
+    margin: 0;
+    font-family: "Arial", sans-serif;
+    background: url('/Images/login-green.jpg') center center fixed;
+    background-size: cover;
+}
+.reg-body{
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    background-image: url('/Images/register-red.jpg'); 
+    background-size: cover;
+}
+
+.reg-container {
+    max-width: 400px;
+    margin: 0 auto;
+    background-color: rgba(76, 64, 64, 0.8);
+    padding: 20px;
+    margin-top: 50px;
+    box-shadow: 0 0 800px rgba(180, 4, 4, 0.9);
+    border-radius: 8px;
+    text-align: center;
+}
+
+.log-container{
+    max-width: 400px;
+    margin: 0 auto;
+    background-color: rgba(5, 12, 9, 0.8);
+    padding: 20px;
+    margin-top: 50px;
+    box-shadow: 0 0 800px rgba(36, 123, 17, 0.9);
+    border-radius: 8px;
+    text-align: center;
+
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    color: #fff; 
+}  
+
+input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 16px;
+    box-sizing: border-box;
+}
+
+.btn-log{
+    background-color: #1DB954;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-reg{
+    background-color: #ff0000; 
+    color: #fff;
+    padding: 10px 15px;
+    border: none;
+    cursor: pointer;
+}
+
+.w3-button{
+    border-radius: 20px;
+    padding-left: 40px;
+    padding-right: 40px;
+}
+
+p {
+    margin-top: 16px;
+    font-size: 14px;
+    color: white;
+
+}
+
+.reg-a {
+    color: #ff0000; 
+}
+
+.log-a {
+      color: #1DB954;
+}
+a:hover{
+    text-decoration: underline;
+}
+  
