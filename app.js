@@ -42,10 +42,10 @@ app.use(express.static(path.join(__dirname, 'static')));
 //connection to the database
 //using master since less hassle, running this on google vm with sql server
 const config = {
-  server: process.env.DB_SERVER || '34.22.205.115',
+  server: process.env.DB_SERVER || '35.206.171.207',
   port: 1433,
-  database: process.env.DB_DATABASE || 'master',
-  user: process.env.DB_USER || 'sa',
+  database: process.env.DB_DATABASE || 'MainDB',
+  user: process.env.DB_USER || 'vikassql',
   password: process.env.DB_PASSWORD || 'Password11',
   options: {
     encrypt: true,
