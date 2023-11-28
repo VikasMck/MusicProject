@@ -42,7 +42,7 @@ app.use(express.static(path.join(__dirname, 'static')));
 //connection to the database
 //using master since less hassle, running this on google vm with sql server
 const config = {
-  server: process.env.DB_SERVER || '34.34.176.137',
+  server: process.env.DB_SERVER || '34.22.205.115',
   port: 1433,
   database: process.env.DB_DATABASE || 'master',
   user: process.env.DB_USER || 'sa',
@@ -281,10 +281,13 @@ app.get('/read', async (req, res) => {
 app.get('/login', (req, res) => res.sendFile(path.join(__dirname, 'templates', 'login.html')));
 app.get('/loginfail', (req, res) => res.sendFile(path.join(__dirname, 'templates', 'loginfail.html')));
 app.get('/register', (req, res) => res.sendFile(path.join(__dirname, 'templates', 'register.html')));
-app.get('/logout', (req, res) => res.sendFile(path.join(__dirname, 'templates', 'preauth.ejs')));
 app.get('/forgotpass', (req, res) => res.sendFile(path.join(__dirname, 'templates', 'forgotpass.html')));
 app.get('/forgotuser', (req, res) => res.sendFile(path.join(__dirname, 'templates', 'forgotuser.html')));
 app.get('/preauth', (req, res) => res.sendFile(path.join(__dirname, 'templates', 'preauth.ejs')));
+app.get('/useraccount', (req, res) => res.sendFile(path.join(__dirname, 'templates', 'useraccount.html')));
+
+
+
 
 
 //home after authentication
@@ -303,7 +306,8 @@ app.get('/afterauth', (req, res) => {
 
 app.get('/logout', (req, res) => {
   req.session.authenticated = false;
-  res.redirect('/logout');
+  const filePath = path.join(__dirname, 'templates', 'preauth.ejs');
+  res.render(filePath);
 });
 
 
