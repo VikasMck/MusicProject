@@ -262,7 +262,9 @@ app.get('/delete', async (req, res) => {
 app.get('/read', async (req, res) => {
   try {
     await sql.connect(config);
-    const result = await sql.query`SELECT username, email, password, profileimg FROM Users where username = ${req.session.username}`;
+    const result = await sql.query`SELECT username, email, password, profileimg FROM Users`;
+
+    // const result = await sql.query`SELECT username, email, password, profileimg FROM Users where username = ${req.session.username}`;
     const accounts = result.recordset;
 
     const ejsFilePath = path.resolve(__dirname, 'templates', 'tempread.ejs');
