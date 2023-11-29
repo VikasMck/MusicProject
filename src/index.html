@@ -122,51 +122,136 @@
     </div>
   </div>
 
-  <!-- Convert model -->
-  <div id="ticketModal" class="w3-modal">
-    <div class="w3-modal-content w3-animate-top w3-card-4">
-      <header class="w3-container w3-teal w3-center w3-padding-32"> 
-        <span onclick="document.getElementById('ticketModal').style.display='none'" 
-       class="w3-button w3-teal w3-xlarge w3-display-topright">×</span>
-        <h2 class="w3-wide"><i class="w3-margin-right"></i>You got this!</h2>
-      </header>
-      <div class="w3-container">
-        <p><label><i class="fa fa-search "></i>  Add your spotify link here!</label></p>
-        <input type="text" class="w3-input w3-border" id="playlistLink" placeholder="https://open.spotify.com/playlist/...">
-        <p><label><i class="fa fa-truck"></i>  Name your YouTube playlist</label></p>
-        <input class="w3-input w3-border" type="text" placeholder="Name....">
-        <button id="convertButton" class="w3-button w3-block w3-teal w3-padding-16 w3-section w3-right">Done<i class="fa fa-check"></i></button>
-        <button class="w3-button w3-red w3-section" onclick="document.getElementById('ticketModal').style.display='none'">Close <i class="fa fa-remove"></i></button>
-        <p class="w3-right">Need <a href="#" class="w3-text-blue">help?</a></p> <!-- to be added later-->
-      </div>
+<!-- Convert model -->
+<div id="ticketModal" class="w3-modal">
+  <div class="w3-modal-content w3-animate-top w3-card-4">
+    <header class="w3-container w3-teal w3-center w3-padding-32"> 
+      <span onclick="document.getElementById('ticketModal').style.display='none'" 
+        class="w3-button w3-teal w3-xlarge w3-display-topright">×</span>
+      <h2 class="w3-wide"><i class="w3-margin-right"></i>You got this!</h2>
+    </header>
+    <div class="w3-container">
+      <p><label><i class="fa fa-search "></i>  Add your Spotify link here!</label></p>
+      <input type="text" class="w3-input w3-border" id="playlistLink" placeholder="https://open.spotify.com/playlist/...">
+      <p><label><i class="fa fa-truck"></i>  Name your YouTube playlist</label></p>
+      <input class="w3-input w3-border" type="text" id="playlistName" placeholder="Name....">
+      <button id="convertButton" class="w3-button w3-block w3-teal w3-padding-16 w3-section w3-right" onclick="convertAndExecute()">Done<i class="fa fa-check"></i></button>
+      <button class="w3-button w3-red w3-section" onclick="document.getElementById('ticketModal').style.display='none'">Close <i class="fa fa-remove"></i></button>
+      <p class="w3-right">Need <a href="#" class="w3-text-blue">help?</a></p> <!-- to be added later-->
     </div>
   </div>
+</div>
 
-  <script>
-    document.getElementById('convertButton').addEventListener('click', async () => {
-      const playlistLink = document.getElementById('playlistLink').value;
+<script src="https://apis.google.com/js/api.js"></script>
+<script>
+  async function convertAndExecute() {
+  const playlistLink = document.getElementById('playlistLink').value;
+  const playlistName = document.getElementById('playlistName').value;
 
-      // Extract playlist ID from the link
-      const playlistIdMatch = playlistLink.match(/playlist\/(\w+)/);
-      const spPlaylistId = playlistIdMatch ? playlistIdMatch[1] : null;
+  // Extract playlist ID from the link
+  const playlistIdMatch = playlistLink.match(/playlist\/(\w+)/);
+  const spPlaylistId = playlistIdMatch ? playlistIdMatch[1] : null;
 
-      if (!spPlaylistId) {
-        alert('Invalid Spotify Playlist Link');
-        return;
-      }
+  if (!spPlaylistId) {
+    alert('Invalid Spotify Playlist Link');
+    return;
+  }
 
-      const response = await fetch('/convert', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ spPlaylistId }),
+  try {
+    // Make a request to the server to get the videoIds array
+    const response = await fetch('/convert', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ spPlaylistId }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Server returned status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    const videoIds = data.videoIds;
+
+    await authenticate();
+    await loadClient();
+    const playlistId = await execute(playlistName, videoIds);
+
+    // Now you can use the videoIds array as needed
+    console.log('Video IDs:', videoIds);
+  } catch (error) {
+    console.error('Error:', error);
+    alert('An error occurred. Please check the console for details.');
+  }
+}
+
+
+  document.getElementById('convertButton').addEventListener('click', convertAndExecute);
+
+  function authenticate() {
+    return gapi.auth2.getAuthInstance()
+      .signIn({ scope: "https://www.googleapis.com/auth/youtube.force-ssl" });
+  }
+
+  function loadClient() {
+    gapi.client.setApiKey("AIzaSyBkmbCdhgh9MhaTsb1DxR7qQVOe2EsVws4");
+    return gapi.client.load("https://www.googleapis.com/discovery/v1/apis/youtube/v3/rest");
+  }
+
+  async function execute(title, videoIds) {
+    try {
+      // Step 1: Create the playlist
+      const playlistResponse = await gapi.client.youtube.playlists.insert({
+        "part": ["snippet"],
+        "resource": {
+          "snippet": {
+            "title": title
+          }
+        }
       });
 
-      const result = await response.text();
-      alert(result);
+      const playlistId = playlistResponse.result.id;
+      console.log(`Playlist created with ID: ${playlistId}`);
+
+      // Step 2: Add videos to the playlist
+      for (const videoId of videoIds) {
+        const playlistItemResponse = await gapi.client.youtube.playlistItems.insert({
+          "part": ["snippet"],
+          "resource": {
+            "snippet": {
+              "playlistId": playlistId,
+              "position": 0,
+              "resourceId": {
+                "kind": "youtube#video",
+                "videoId": videoId
+              }
+            }
+          }
+        });
+
+        console.log(`Video ${videoId} added to the playlist`);
+        // Handle the results here if needed
+        console.log("Response", playlistItemResponse);
+      }
+
+      return playlistId; // Return the playlist ID if needed
+    } catch (err) {
+      console.error("Execute error", err);
+      throw err; // Propagate the error for better error handling
+    }
+  }
+
+  gapi.load("client:auth2", function () {
+    gapi.auth2.init({
+      client_id: "78786335679-0j6m6nugv8ctee7ummee4imgmu32ifbe.apps.googleusercontent.com",
+      plugin_name: "name",
     });
-  </script>
+  });
+</script>
+
+
+
 
   <!-- The Contact Section -->
   <div class="w3-container w3-content w3-padding-64" style="max-width:800px" id="contact">
