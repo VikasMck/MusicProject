@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="/css/style.css">
 
 </head>
@@ -38,7 +39,6 @@
                 <a href="/register" class="w3-bar-item w3-button" onclick="showRegisterModal()">Register</a>
             </div>
         </div>
-        <a href="javascript:void(0)" class="w3-padding-large w3-hover-red w3-hide-small w3-right"><i class="fa fa-search"></i></a>
     </div>
 </div>
 
@@ -55,126 +55,125 @@
 <div class="w3-content" style="max-width:2000px;margin-top:46px">
 
     <!-- main image with the welcome text -->
-    <div class="mySlides w3-display-container w3-center">
-        <div style="position: relative;">
-            <img src="/Images/spotify-over-youtube.webp" style="width:100%; opacity: 0.9;">
-            <b>
-                <div class="w3-display-topmiddle w3-container w3-text-white w3-padding-32 w3-hide-small glow">
-                    <div id="container">
-                        <span id="text1"></span>
-                        <span id="text2"></span>
-                    </div>
-                    
-                    <svg id="filters">
-                        <defs>
-                            <filter id="threshold">
-                                <feColorMatrix in="SourceGraphic" type="matrix" values="1 0 0 0 0
-                                    0 1 0 0 0
-                                    0 0 1 0 0
-                                    0 0 0 255 -140" />
-                            </filter>
-                        </defs>
-                    </svg>
-                </div>
-            </b>
-        </div>
-    </div>
-
-    <!-- creating playlists -->
-    <div class="convertcolour">
-        <div class="w3-container w3-content w3-center w3-padding-64" id="convernav">
-            <h2 class="w3-wide">CONVERT </h2>
-            <p class="w3-opacity"><i>We love music</i></p>
-            <p class="w3-justify">Using this website you are able to enjoy music your way without any hassles! Convert your Spotify playlist into a YouTube one here!</p>
-            <div>
-                <img src="/Images/youtube_music_spotify_convert.webp" alt="Convert" style="width:50%; border-radius: 30px">
-                <div class="w3-container">
-                    <p>Use your Spotify playlist link and get a YouTube playlist made into your account!</p>
-                    <button class="w3-button w3-black w3-margin-bottom" onclick="document.getElementById('loginRegisterModal').style.display='block'" style="padding: 25px 35px;">CONVERT</button>
-                </div>
+    <div class="w3-content" style="max-width:2000px;margin-top:46px">
+        <!-- main image with the welcome text -->
+        <div class="mySlides w3-display-container w3-center">
+            <div style="position: relative;">
+                <img src="/Images/header-grey.jpeg" style="width:100%; opacity: 0.9;">
             </div>
         </div>
     </div>
 
+   <!-- creating playlists -->
+   <div style="background-image: url('/Images/convert-part-disk.jpeg'); background-size: cover; background-position: center; background-repeat: no-repeat;">
+    <div class="w3-container w3-content w3-center w3-padding-64" id="convernav">
+        <h2 class="w3-wide w3-text-white">CONVERT</h2>
+        <p class="w3-opacity w3-text-white"><i>We love music</i></p>
+        <p class="w3-justify w3-text-white">Using this website you are able to enjoy music your way without any hassles! Convert your Spotify playlist into a YouTube one here!</p>
+        <div>
+            <img src="/Images/youtube_music_spotify_convert.webp" alt="Convert" style="width:50%; border-radius: 30px">
+            <div class="w3-container">
+                <p class="w3-text-white w3-padding-16">Use your Spotify playlist link and get a YouTube playlist made into your account!</p>
+                <button class="w3-button w3-black w3-margin-bottom" onclick="document.getElementById('loginRegisterModal').style.display='block'" style="padding: 25px 35px; box-shadow: 0 0 30px 10px rgb(101, 100, 100);">CONVERT</button>
+            </div>
+        </div>
+    </div>
+    </div>
+
     <!-- song part-->
     <div class="w3-black" id="songnav">
-        <div class="w3-container w3-content w3-padding-64" style="max-width:800px">
+        <div class="w3-container w3-content w3-padding-64" style="max-width:1300px; margin: 0 auto;">
             <h2 class="w3-wide w3-center">Which song do you want to look up?</h2>
             <p class="w3-opacity w3-center"><i>Do it here!</i></p><br>
-  
-            <form>
-                <ul class="w3-ul w3-border w3-white w3-text-grey">
-                    <li class="w3-padding">
-                        <label for="songName">Song Name:</label>
-                        <input type="text" id="songName" name="songName" placeholder="">
-                    </li>
-                    <li class="w3-padding">
-                        <label for="artist">Artist:</label>
-                        <input type="text" id="artist" name="artist" placeholder="">
-                    </li>
-                    <li class="w3-padding">
-                        <label for="publishDate">Publish Date:</label>
-                        <input type="text" id="publishDate" name="publishDate" placeholder="Optional">
-                    </li>
-                </ul>
-            </form>
+            <div class="w3-container w3-margin w3-round-large w3-row-padding" style="background: none;">
+                <div class="w3-col s12 m4" style="margin-bottom: 20px;">
+                    <label for="songName" class="w3-text-white" style="display: block; margin-bottom: 5px;">Song Name:</label>
+                    <input type="text" id="songName" name="songName" placeholder=" " class="w3-input" style="border: none; border-bottom: 1px solid white; background: none; color: white;">
+                </div>
+                <div class="w3-col s12 m4" style="margin-bottom: 20px;">
+                    <label for="artist" class="w3-text-white" style="display: block; margin-bottom: 5px;">Artist:</label>
+                    <input type="text" id="artist" name="artist" placeholder=" " class="w3-input" style="border: none; border-bottom: 1px solid white; background: none; color: white;">
+                </div>
+                <div class="w3-col s12 m4" style="margin-bottom: 20px;">
+                    <label for="publishDate" class="w3-text-white" style="display: block; margin-bottom: 5px;">Publish Date:</label>
+                    <input type="text" id="publishDate" name="publishDate" placeholder=" " class="w3-input" style="border: none; border-bottom: 1px solid white; background: none; color: white;">
+                </div>
+            </div>
+            
+        </div>
+
+       
+
+        <div class="w3-container scroll" style="overflow-x: auto; background: url('/Images/song-part-black.jpeg') no-repeat; background-size: cover; height: 800px">
+            <div class="w3-row-padding">
+                <% for (let i = 0; i < allSongs.length; i++) { %>
+                    <div class="w3-third w3-container w3-margin-bottom" style="display: inline-block; padding: 30px;">
+                        <img src="<%= allSongs[i].src %>" alt="<%= allSongs[i].alt %>" style="width: 100%; display: block; margin: 0 auto; border-radius: 8px;">
+                        <div class="w3-container" style="text-align: center; padding: 15px; border-radius: 10px; background-color: rgba(255, 255, 255, 0.8); position: relative;">
+                            <p style="word-wrap: break-word; font-weight: bold; margin-bottom: 5px; color:black"><%= allSongs[i].songtitle %></p>
+                            <p style="word-wrap: break-word; color: black;"><%= allSongs[i].songauthor %></p>
+                            <p style="word-wrap: break-word; color: black;"><%= allSongs[i].songdate %></p>
+                            <div class="w3-container w3-padding">
+                                <button class="w3-btn w3-round w3-pink" onclick="document.getElementById('loginRegisterModal').style.display='block'"><i class="fas fa-heart"></i> Favorite</button>
+                            </div>
+                        </div>
+                    </div>
+                <% } %>
+            </div>
         </div>
     </div>
     
   <!-- if the user is not logged on, do not allow this feature -->
   <div id="loginRegisterModal" class="w3-modal">
-      <div class="w3-modal-content w3-animate-top w3-card-4">
-          <header class="w3-container w3-teal w3-center w3-padding-32"> 
+    <div class="w3-modal-content w3-animate-top w3-card-4" style="box-shadow: 0 0 30px 10px rgba(128, 128, 128, 0.8);">
+        <header class="w3-container w3-black w3-center w3-padding-32"> 
               <span onclick="document.getElementById('loginRegisterModal').style.display='none'" 
-                  class="w3-button w3-teal w3-xlarge w3-display-topright">×</span>
+                  class="w3-button w3-black w3-xlarge w3-display-topright">×</span>
               <h2 class="w3-wide"><i class="w3-margin-right"></i>Oppsie!</h2>
           </header>
-          <div class="w3-container">
-              <h2>To access this, you need to be a user here!</h2>
-              <button class="w3-button w3-block w3-teal w3-padding-16 w3-section w3-right" onclick="window.location.href='/login'">Login <i class="fa fa-sign-in"></i></button>
-              <button class="w3-button w3-block w3-blue w3-padding-16 w3-section w3-left" onclick="window.location.href='/register'">Register <i class="fa fa-user-plus"></i></button>
-              <button class="w3-button w3-red w3-section" onclick="document.getElementById('loginRegisterModal').style.display='none'">Close <i class="fa fa-remove"></i></button>
-              <p class="w3-right">Need <a href="#" class="w3-text-blue">help?</a></p> <!-- to be added later-->
+          <div class="w3-container w3-grey">
+              <h2 class="w3-center">To access this, you need to be a user here!</h2>
+              <button class="w3-button w3-block w3-black w3-text-white w3-padding-16 w3-section w3-right" onclick="window.location.href='/login'">Login <i class="fa fa-sign-in"></i></button>
+              <button class="w3-button w3-block w3-black w3-text-white w3-padding-16 w3-section w3-left" onclick="window.location.href='/register'">Register <i class="fa fa-user-plus"></i></button>
           </div>
       </div>
   </div>
 
-  <!-- The Contact Section -->
-  <div class="w3-container w3-content w3-padding-64" style="max-width:800px" id="contact">
-      <h2 class="w3-wide w3-center">CONTACT</h2>
-      <div class="w3-row w3-padding-32">
-          <div class="w3-col m6 w3-large w3-margin-bottom">
-              <i class="fa fa-map-marker" style="width:30px"></i> Dublin, Ireland<br>
-              <i class="fa fa-phone" style="width:30px"></i> Phone: 012345678<br>
-              <i class="fa fa-envelope" style="width:30px"> </i> Email: mail@mail.com<br>
-          </div>
-          <div class="w3-col m6">
-              <form action="" target="_blank"> <!-- will be added later-->
-                  <div class="w3-row-padding" style="margin:0 -16px 8px -16px">
-                      <div class="w3-half">
-                          <input class="w3-input w3-border" type="text" placeholder="Name" required name="Name">
-                      </div>
-                      <div class="w3-half">
-                          <input class="w3-input w3-border" type="text" placeholder="Email" required name="Email">
-                      </div>
-                  </div>
-                  <input class="w3-input w3-border" type="text" placeholder="Message" required name="Message">
-                  <button class="w3-button w3-black w3-section w3-right" type="submit">SEND</button>
-              </form>
-          </div>
-      </div>
-  </div>
-  
-  <!-- Footer -->
-  <footer class="w3-container w3-padding-64 w3-center w3-opacity w3-light-grey w3-xlarge">
-      <i class="fa fa-facebook-official w3-hover-opacity"></i>
-      <i class="fa fa-instagram w3-hover-opacity"></i>
-      <i class="fa fa-snapchat w3-hover-opacity"></i>
-      <i class="fa fa-pinterest-p w3-hover-opacity"></i>
-      <i class="fa fa-twitter w3-hover-opacity"></i>
-      <i class="fa fa-linkedin w3-hover-opacity"></i>
-      <p class="w3-medium">By Vikas and Eric</p>
-  </footer>
+  <!--  contact section just because looks nice -->
+    <div style="background: linear-gradient(90deg, rgba(29,29,29,1) 0%, rgba(67,67,67,1) 37%, rgba(61,61,61,1) 51%, rgba(61,61,61,1) 57%, rgba(59,59,59,1) 62%, rgba(40,40,40,1) 70%, rgba(32,32,32,1) 79%, rgba(30,30,30,1) 89%, rgba(27,27,27,1) 100%);">
+        <div class="w3-container w3-content w3-padding-64"  id="contact">
+            <h2 class="w3-wide w3-center w3-text-white">CONTACT</h2>
+            <div class="w3-row w3-padding-32">
+                <div class="w3-col m6 w3-large w3-text-white" style="padding-right: 20px;"> <!-- Add padding to the right of the column -->
+                    <i class="fa fa-map-marker" style="width:30px; margin-right: 10px;"></i> Dublin, Ireland<br>
+                    <i class="fa fa-phone" style="width:30px; margin-right: 10px;"></i> Phone: 012345678<br>
+                    <i class="fa fa-envelope" style="width:30px; margin-right: 10px;"> </i> Email: mail@mail.com<br>
+                </div>
+                <div class="w3-col m6" style="padding-left: 20px;">
+                    <form action="" target="_blank" style="padding: 0 16px;"> 
+                        <div class="w3-row-padding" style="margin:0 -16px 8px -16px">
+                            <div class="w3-half">
+                                <input class="w3-input w3-border" type="text" placeholder="Name" required name="Name" style="margin-bottom: 8px;">
+                            </div>
+                            <div class="w3-half">
+                                <input class="w3-input w3-border" type="text" placeholder="Email" required name="Email" style="margin-bottom: 8px;">
+                            </div>
+                        </div>
+                        <input class="w3-input w3-border" type="text" placeholder="Message" required name="Message" style="margin-bottom: 16px;">
+                        <button class="w3-button w3-white w3-text-black w3-right" type="submit">SEND</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<div style="background: linear-gradient(90deg, rgba(29,29,29,1) 0%, rgba(67,67,67,1) 37%, rgba(61,61,61,1) 51%, rgba(61,61,61,1) 57%, rgba(59,59,59,1) 62%, rgba(40,40,40,1) 70%, rgba(32,32,32,1) 79%, rgba(30,30,30,1) 89%, rgba(27,27,27,1) 100%);">
+    <footer class="w3-container w3-padding-64 w3-center w3-xlarge">
+        <p class="w3-medium w3-text-white">By Vikas and Eric</p>
+    </footer>
+</div>
 
   <script src="/js/scripts.js"> </script>
 

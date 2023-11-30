@@ -75,14 +75,36 @@ const closeDatabaseConnection = () => {
 };
 
 
+const allSongs = [
+  { src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Temp_plate.svg/601px-Temp_plate.svg.png', alt: 'Photo1', songtitle: 'SongTitle1', songauthor: 'SongAuthor1', songdate: 'SongDate1' },
+  { src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Temp_plate.svg/601px-Temp_plate.svg.png', alt: 'Photo2', songtitle: 'SongTitle2', songauthor: 'SongAuthor1', songdate: 'SongDate2' },
+  { src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Temp_plate.svg/601px-Temp_plate.svg.png', alt: 'Photo3', songtitle: 'SongTitle3', songauthor: 'SongAuthor1', songdate: 'SongDate3' },
+  { src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Temp_plate.svg/601px-Temp_plate.svg.png', alt: 'Photo4', songtitle: 'SongTitle4', songauthor: 'SongAuthor1', songdate: 'SongDate4' },
+  { src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Temp_plate.svg/601px-Temp_plate.svg.png', alt: 'Photo5', songtitle: 'SongTitle5', songauthor: 'SongAuthor1', songdate: 'SongDate5' },
+  { src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Temp_plate.svg/601px-Temp_plate.svg.png', alt: 'Photo6', songtitle: 'SongTitle6', songauthor: 'SongAuthor1', songdate: 'SongDate6' },
+  { src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Temp_plate.svg/601px-Temp_plate.svg.png', alt: 'Photo7', songtitle: 'SongTitle7', songauthor: 'SongAuthor1', songdate: 'SongDate7' },
+  { src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Temp_plate.svg/601px-Temp_plate.svg.png', alt: 'Photo8', songtitle: 'SongTitle8', songauthor: 'SongAuthor1', songdate: 'SongDate8' },
+  { src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Temp_plate.svg/601px-Temp_plate.svg.png', alt: 'Photo9', songtitle: 'SongTitle9', songauthor: 'SongAuthor1', songdate: 'SongDate9' },
+  { src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Temp_plate.svg/601px-Temp_plate.svg.png', alt: 'Photo10', songtitle: 'CSongTitle10', songauthor: 'SongAuthor1', songdate: 'SongDate10' },
+  { src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Temp_plate.svg/601px-Temp_plate.svg.png', alt: 'Photo11', songtitle: 'BSongTitle11', songauthor: 'SongAuthor1', songdate: 'SongDate11' },
+  { src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Temp_plate.svg/601px-Temp_plate.svg.png', alt: 'Photo12', songtitle: 'ASongTitle12', songauthor: 'SongAuthor1', songdate: 'SongDate12' },
+  { src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Temp_plate.svg/601px-Temp_plate.svg.png', alt: 'Photo13', songtitle: 'SongTitle13', songauthor: 'SongAuthor1', songdate: 'CSongDate13' },
+  { src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Temp_plate.svg/601px-Temp_plate.svg.png', alt: 'Photo14', songtitle: 'SongTitle14', songauthor: 'SongAuthor1', songdate: 'BSongDate14' },
+  { src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Temp_plate.svg/601px-Temp_plate.svg.png', alt: 'Photo15', songtitle: 'SongTitle15', songauthor: 'SongAuthor1', songdate: 'ASongDate15' },
+  { src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Temp_plate.svg/601px-Temp_plate.svg.png', alt: 'Photo16', songtitle: 'SongTitle16', songauthor: 'CSongAuthor1', songdate: 'SongDate16' },
+  { src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Temp_plate.svg/601px-Temp_plate.svg.png', alt: 'Photo17', songtitle: 'SongTitle17', songauthor: 'BSongAuthor1', songdate: 'SongDate17' },
+  { src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Temp_plate.svg/601px-Temp_plate.svg.png', alt: 'Photo18', songtitle: 'SongTitle18', songauthor: 'ASongAuthor1', songdate: 'SongDate18' },
+];
+
+
 // navigation 
 
 app.get(['/', '/preauth'], (req, res) => {
   const filePath = 'preauth';
 
   //render the ejs so it stops downloading
-  res.render(filePath, {}, (err, html) => {
-      if (err) {
+  res.render(filePath, { allSongs: allSongs }, (err, html) => {
+    if (err) {
           console.error(err);
           res.status(500).send('Internal Server Error');
       } 
@@ -97,13 +119,48 @@ app.get(['/', '/preauth'], (req, res) => {
 
 //register route 
 app.post('/register', async (req, res) => {
-  const { username, password, email } = req.body;
-
+  const { username, password, bio, email, userimage } = req.body;
+ 
   try {
     await connectToDatabase();
     const hashedPassword = await hashPassword(password);
     await sql.query`INSERT INTO Users (username, email, Password) VALUES (${username}, ${email}, ${hashedPassword})`;
-    res.redirect('/login');
+    req.session.authenticated = true;
+    //stored it as a session variable
+    req.session.username = username;
+    req.session.userimage = userimage;
+    req.session.bio = bio;
+    req.session.email = email;
+
+    const checkTableQuery = `
+      select count(*) as tableExists
+      from information_schema.tables
+      where table_name = N'${username}_basket' and table_schema = 'dbo';
+    `;
+
+    const tableCheckResults = await sql.query(checkTableQuery);
+    const tableExistsCount = tableCheckResults.recordset[0].tableExists;
+
+
+
+    console.log(checkTableQuery)
+    console.log(tableCheckResults)
+
+    if (tableExistsCount === 0) {
+      const createTableQuery = `
+        create table ${username}_basket (
+          songid int identity(1,1) primary key,
+          songtitle varchar(255) null,
+          songauthor varchar(255) null,
+          songdate varchar(255) null
+        )
+      `;
+      await sql.query(createTableQuery);
+      console.log(`Table '${username}_basket' created.`);
+    }
+
+    res.redirect('/afterauth');
+
   } 
   catch (err) {
     console.error(err);
@@ -120,11 +177,14 @@ app.post('/login', async (req, res) => {
 
   try {
     await connectToDatabase();
-    const result = await sql.query`SELECT password, username FROM Users WHERE username = ${username}`;
+    const result = await sql.query`SELECT password, email, username, userimage, bio FROM Users WHERE username = ${username}`;
 
     //checks if there is at least one row with the asked entry in the table
     if (result.recordset.length > 0) {
       const hashedPassword = result.recordset[0].password;
+      const userimage = result.recordset[0].userimage;
+      const bio = result.recordset[0].bio;
+      const email = result.recordset[0].email;
       
       //compare
       if (hashedPassword !== undefined) {
@@ -137,6 +197,9 @@ app.post('/login', async (req, res) => {
           req.session.authenticated = true;
           //stored it as a session variable
           req.session.username = username;
+          req.session.userimage = userimage;
+          req.session.bio = bio;
+          req.session.email = email;
           res.redirect('/afterauth');
         } 
         else {
@@ -219,63 +282,132 @@ app.post('/forgotpass', async (req, res) => {
   }
 });
 
-//way to delete accounts
-app.get('/delete', async (req, res) => {
-
+app.post('/updateprofile', async (req, res) => {
   if (req.session.authenticated) {
-    const deletedUsername = req.session.username;
+    const { userimage, username, email, bio, password } = req.body;
 
     try {
-      await sql.connect(config);
+      await connectToDatabase();
 
-      const result = await sql.query`DELETE FROM users WHERE username = ${deletedUsername}`;
-
-      if (result.rowsAffected[0] > 0) {
-        //destroy the session after deletion
-        req.session.destroy((err) => {
-          if (err) {
-            console.error('Error destroying session:', err);
-            res.status(500).send('Internal Server Error');
-            return;
-          }
-
-          res.redirect('/preauth');
-        });
-      } 
-      else {
-        res.status(404).send('User not found');
+      if (userimage !== undefined && userimage !== '') {
+        const result = await sql.query`UPDATE Users SET userimage = ${userimage} WHERE email = ${req.session.email}`;
+        if (result.rowsAffected[0] > 0) {
+          req.session.userimage = userimage;
+          console.log('Profile image updated successfully.');
+        }
       }
+
+      if (username !== undefined && username !== '') {
+        const result = await sql.query`UPDATE Users SET username = ${username} WHERE email = ${req.session.email}`;
+        if (result.rowsAffected[0] > 0) {
+          req.session.username = username;
+          console.log('Username updated successfully.');
+        }
+      }
+
+      if (email !== undefined && email !== '') {
+        const result = await sql.query`UPDATE Users SET email = ${email} WHERE email = ${req.session.email}`;
+        if (result.rowsAffected[0] > 0) {
+          req.session.email = email;
+          console.log('Email updated successfully.');
+        }
+      }
+
+      if (bio !== undefined && bio !== '') {
+        const result = await sql.query`UPDATE Users SET Bio = ${bio} WHERE username = ${req.session.username}`;
+        if (result.rowsAffected[0] > 0) {
+          req.session.bio = bio;
+          console.log('Bio updated successfully.');
+        }
+      }
+
+      if (password !== undefined && password !== '') {
+        const hashedPassword = await hashPassword(password);
+
+        const result = await sql.query`UPDATE Users SET password = ${hashedPassword} WHERE email = ${req.session.email}`;
+        if (result.rowsAffected[0] > 0) {
+          console.log('Password updated successfully.');
+        }
+      }
+
+      console.log('Profile updated successfully');
+      res.redirect('/useraccount');
+
     } 
-    catch (error) {
-      console.error('Error deleting user:', error);
+    catch (err) {
+      console.error('SQL error:', err.message);
       res.status(500).send('Internal Server Error');
     } 
     finally {
-      await sql.close();
+      closeDatabaseConnection();
     }
-  } else {
+  }
+  else {
     res.redirect('/login');
   }
 });
 
+
+
+  //way to delete accounts
+  app.get('/delete', async (req, res) => {
+
+    if (req.session.authenticated) {
+      const deletedUsername = req.session.username;
+
+      try {
+        await sql.connect(config);
+
+        const result = await sql.query`DELETE FROM users WHERE username = ${deletedUsername}`;
+
+        if (result.rowsAffected[0] > 0) {
+          //destroy the session after deletion
+          req.session.destroy((err) => {
+            if (err) {
+              console.error('Error destroying session:', err);
+              res.status(500).send('Internal Server Error');
+              return;
+            }
+
+            res.redirect('/preauth');
+          });
+        } 
+        else {
+          res.status(404).send('User not found');
+        }
+      } 
+      catch (error) {
+        console.error('Error deleting user:', error);
+        res.status(500).send('Internal Server Error');
+      } 
+      finally {
+        await sql.close();
+      }
+    } else {
+      res.redirect('/login');
+    }
+});
+
 //temp 
 app.get('/read', async (req, res) => {
-  try {
-    await sql.connect(config);
-    const result = await sql.query`SELECT username, email, password, profileimg FROM Users`;
+  if (req.session.authenticated) {
+    try {
+      await sql.connect(config);
+      const result = await sql.query`SELECT username, email, password, bio, userimage FROM Users`;
 
-    // const result = await sql.query`SELECT username, email, password, profileimg FROM Users where username = ${req.session.username}`;
-    const accounts = result.recordset;
+      const accounts = result.recordset;
 
-    const ejsFilePath = path.resolve(__dirname, 'templates', 'tempread.ejs');
-    res.render(ejsFilePath, { accounts: accounts });
-  } 
-  catch (error) {
-    console.error('Error reading accounts:', error);
-    res.status(500).send('Internal Server Error');
-  } 
-  finally {
-    await sql.close();
+      const ejsFilePath = path.resolve(__dirname, 'templates', 'tempread.ejs');
+      res.render(ejsFilePath, { accounts: accounts });
+    } catch (error) {
+      console.error('Error reading accounts:', error);
+      res.status(500).send('Internal Server Error');
+    } finally {
+      await sql.close();
+    }
+  }
+  else {
+    res.redirect('/login');
   }
 });
 
@@ -286,8 +418,32 @@ app.get('/register', (req, res) => res.sendFile(path.join(__dirname, 'templates'
 app.get('/forgotpass', (req, res) => res.sendFile(path.join(__dirname, 'templates', 'forgotpass.html')));
 app.get('/forgotuser', (req, res) => res.sendFile(path.join(__dirname, 'templates', 'forgotuser.html')));
 app.get('/preauth', (req, res) => res.sendFile(path.join(__dirname, 'templates', 'preauth.ejs')));
-app.get('/useraccount', (req, res) => res.sendFile(path.join(__dirname, 'templates', 'useraccount.html')));
+app.get('/updateprofile', (req, res) => res.sendFile(path.join(__dirname, 'templates', 'updateprofile.html')));
 
+
+
+
+//this will be appended with personal songs for each indiviual users into a table "{req.session.username}_table"
+const personalSongs = [
+  { src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Temp_plate.svg/601px-Temp_plate.svg.png', alt: 'Photo1', songtitle: 'SongTitle1', songauthor: 'SongAuthor1', songdate: 'SongDate1' },
+  { src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Temp_plate.svg/601px-Temp_plate.svg.png', alt: 'Photo2', songtitle: 'SongTitle2', songauthor: 'SongAuthor1', songdate: 'SongDate2' },
+  { src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Temp_plate.svg/601px-Temp_plate.svg.png', alt: 'Photo3', songtitle: 'SongTitle3', songauthor: 'SongAuthor1', songdate: 'SongDate3' },
+  { src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Temp_plate.svg/601px-Temp_plate.svg.png', alt: 'Photo4', songtitle: 'SongTitle4', songauthor: 'SongAuthor1', songdate: 'SongDate4' },
+  { src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Temp_plate.svg/601px-Temp_plate.svg.png', alt: 'Photo5', songtitle: 'SongTitle5', songauthor: 'SongAuthor1', songdate: 'SongDate5' },
+  { src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Temp_plate.svg/601px-Temp_plate.svg.png', alt: 'Photo6', songtitle: 'SongTitle6', songauthor: 'SongAuthor1', songdate: 'SongDate6' },
+  { src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Temp_plate.svg/601px-Temp_plate.svg.png', alt: 'Photo7', songtitle: 'SongTitle7', songauthor: 'SongAuthor1', songdate: 'SongDate7' },
+  { src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Temp_plate.svg/601px-Temp_plate.svg.png', alt: 'Photo8', songtitle: 'SongTitle8', songauthor: 'SongAuthor1', songdate: 'SongDate8' },
+  { src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Temp_plate.svg/601px-Temp_plate.svg.png', alt: 'Photo9', songtitle: 'SongTitle9', songauthor: 'SongAuthor1', songdate: 'SongDate9' },
+  { src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Temp_plate.svg/601px-Temp_plate.svg.png', alt: 'Photo10', songtitle: 'CSongTitle10', songauthor: 'SongAuthor1', songdate: 'SongDate10' },
+  { src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Temp_plate.svg/601px-Temp_plate.svg.png', alt: 'Photo11', songtitle: 'BSongTitle11', songauthor: 'SongAuthor1', songdate: 'SongDate11' },
+  { src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Temp_plate.svg/601px-Temp_plate.svg.png', alt: 'Photo12', songtitle: 'ASongTitle12', songauthor: 'SongAuthor1', songdate: 'SongDate12' },
+  { src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Temp_plate.svg/601px-Temp_plate.svg.png', alt: 'Photo13', songtitle: 'SongTitle13', songauthor: 'SongAuthor1', songdate: 'CSongDate13' },
+  { src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Temp_plate.svg/601px-Temp_plate.svg.png', alt: 'Photo14', songtitle: 'SongTitle14', songauthor: 'SongAuthor1', songdate: 'BSongDate14' },
+  { src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Temp_plate.svg/601px-Temp_plate.svg.png', alt: 'Photo15', songtitle: 'SongTitle15', songauthor: 'SongAuthor1', songdate: 'ASongDate15' },
+  { src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Temp_plate.svg/601px-Temp_plate.svg.png', alt: 'Photo16', songtitle: 'SongTitle16', songauthor: 'CSongAuthor1', songdate: 'SongDate16' },
+  { src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Temp_plate.svg/601px-Temp_plate.svg.png', alt: 'Photo17', songtitle: 'SongTitle17', songauthor: 'BSongAuthor1', songdate: 'SongDate17' },
+  { src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Temp_plate.svg/601px-Temp_plate.svg.png', alt: 'Photo18', songtitle: 'SongTitle18', songauthor: 'ASongAuthor1', songdate: 'SongDate18' },
+];
 
 
 
@@ -295,10 +451,13 @@ app.get('/useraccount', (req, res) => res.sendFile(path.join(__dirname, 'templat
 //home after authentication
 app.get('/afterauth', (req, res) => {
   if (req.session.authenticated) {
-    const filePath = path.join(__dirname, 'templates', 'afterauth.ejs');
+    path.join(__dirname, 'templates', 'afterauth.ejs');
     const username = req.session.username;
 
-  res.render('afterauth', { username: username });
+
+  // res.render('afterauth', { username: username });
+  res.render('afterauth', { personalSongs: personalSongs, username: username});
+
   } 
   else {
     res.redirect('/login');
@@ -306,12 +465,79 @@ app.get('/afterauth', (req, res) => {
 });
 
 
+//function renders page
+const renderPage = (res, currentPage, username, userimage, bio) => {
+  
+  //6 items per page; can be more
+  const itemsPerPage = 6;
+  const startIdx = (currentPage - 1) * itemsPerPage;
+  const endIdx = startIdx + itemsPerPage;
+  const currentSongs = personalSongs.slice(startIdx, endIdx);
+  const totalPages = Math.ceil(personalSongs.length / itemsPerPage);
+
+  res.render('useraccount', { personalSongs: currentSongs, totalPages, currentPage, username, userimage, bio });
+};
+
+//main route
+app.get('/useraccount', (req, res) => {
+  if (req.session.authenticated) {
+    const username = req.session.username;
+    const userimage = req.session.userimage;
+    const bio = req.session.bio;
+    const currentPage = 1;
+
+    renderPage(res, currentPage, username, userimage, bio);
+  } 
+  else {
+    res.redirect('/login');
+  }
+});
+
+//page stuff
+app.get('/useraccount/:page', (req, res) => {
+  if (req.session.authenticated) {
+
+    const currentPage = parseInt(req.params.page);
+    const username = req.session.username;
+    const userimage = req.session.userimage;
+    const bio = req.session.bio;
+
+    renderPage(res, currentPage, username, userimage, bio);  
+  }
+  else 
+    {
+      res.redirect('/login');
+    }
+});
+
+//for looking up usernames in realtime
+app.post('/checkusername', (req, res) => {
+  const enteredUsername = req.body.username;
+  const sessionUsername = req.session.username; 
+
+  if (enteredUsername === sessionUsername) {
+    res.json({ match: true });
+  } else {
+    res.json({ match: false });
+  }
+});
+
+
 app.get('/logout', (req, res) => {
   req.session.authenticated = false;
   const filePath = path.join(__dirname, 'templates', 'preauth.ejs');
-  res.render(filePath);
+  res.render(filePath, { allSongs: allSongs }, (err, html) => {
+    if (err) {
+          console.error(err);
+          res.status(500).send('Internal Server Error');
+      } 
+      else
+      {
+        res.setHeader('Content-Type', 'text/html');
+        res.send(html);
+      }
+  });
 });
-
 
 //run server
 app.listen(port, () => {

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Update</title>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: url('/Images/updatepage.jpeg') center/cover fixed;
+        }
+
+        .form-container {
+            background: rgba(255, 255, 255, 0.8);
+            max-width: 800px;
+            margin: 100px auto;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        #image-preview {
+            max-width: 300px;
+            max-height: 300px;
+            margin: 20px auto;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="form-container w3-card-4">
+        <h2 class="w3-center">Update Your Profile</h2>
+
+        <form action="/updateprofile" method="post">
+            <label for="userimage">Profile Image URL:</label>
+            <input type="text" id="userimage" name="userimage" class="w3-input w3-border" placeholder="Enter image URL" oninput="updateImagePreview()">
+
+            <div id="image-preview"></div>
+
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" class="w3-input w3-border" placeholder="Enter your new username">
+
+            <label for="email">Email:</label>
+            <input type="text" id="email" name="email" class="w3-input w3-border" placeholder="Enter your new email">
+
+            <label for="bio">Bio:</label>
+            <textarea id="bio" name="bio" class="w3-input w3-border" placeholder="Enter your bio"></textarea>
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" class="w3-input w3-border" placeholder="Enter your new password">
+
+            <div style="text-align: center; margin-top: 20px; font-size: 20px;">
+                <button class="w3-button w3-margin-right" id="toggleUsernameBtn" type="button" onclick="window.location.href='/useraccount'">Go Back</button>
+                <button class="w3-button" type="submit">Submit</button>
+            </div>
+
+        </form>
+    </div>
+
+    <script>
+        //this previews the users profile picture
+        function updateImagePreview() {
+            const imageUrl = document.getElementById('userimage').value;
+            const imagePreview = document.getElementById('image-preview');
+            
+            if (imageUrl.trim() !== '') {
+                imagePreview.innerHTML = `<img src="${imageUrl}" alt="Profile Image" class="w3-image">`;
+            } else {
+                imagePreview.innerHTML = '';
+            }
+        }
+    </script>
+</body>
+</html>

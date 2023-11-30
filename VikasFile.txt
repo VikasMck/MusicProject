@@ -1,0 +1,2 @@
+connection string for sql server:
+Server=35.206.171.207,1433;Database=MainDB;User Id=vikassql;Password=Password11;Encrypt=true;TrustServerCertificate=true;

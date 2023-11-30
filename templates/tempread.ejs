@@ -33,16 +33,70 @@
         tr:nth-child(even) {
             background-color: #f9f9f9;
         }
+        img{
+            width: 20%;
+            
+        }
+    </style>
+</head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accounts</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        a {
+            text-decoration: none;
+            padding: 10px;
+            background-color: #000000;
+            color: white;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            display: inline-block;
+        }
+
+        img {
+            max-width: 300px;
+            max-height: 300px;
+        }
     </style>
 </head>
 <body>
     <h1>Accounts</h1>
+    <a href="#" onclick="goBack()">Go Back</a>
     <table>
         <tr>
             <th>Account ID</th>
             <th>Username</th>
             <th>Email</th>
             <th>Password</th>
+            <th>Bio</th>
             <th>Image</th>
         </tr>
         <% accounts.forEach(account => { %>
@@ -51,9 +105,19 @@
                 <td><%= account.username %></td>
                 <td><%= account.email %></td>
                 <td><%= account.password %></td>
-                <td><%= account.image %></td>
+                <td><%= account.bio %></td>
+                <td><img src="<%= account.userimage %>"></td>
             </tr>
         <% }); %>
     </table>
+
+
+    <script>
+        function goBack() {
+            window.location.href = '/afterauth';
+        }
+    </script>
 </body>
+</html>
+
 </html>
