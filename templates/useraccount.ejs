@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title> <%= username %> profile!</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<style>
+body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", sans-serif}
+</style>
+
+</head>
+<body class="w3-light-grey w3-content" style="max-width:1600px">
+
+
+<!-- sidebar -->
+<nav class="w3-sidebar w3-collapse w3-white w3-animate-left" style="z-index:3;width:300px;" id="mySidebar"><br>
+  <div class="w3-container">
+    <a href="#" onclick="w3_close()" class="w3-hide-large w3-right w3-jumbo w3-padding w3-hover-grey" title="close menu">
+      <i class="fa fa-remove"></i>
+    </a>
+    <img src="<%= userimage %>" style="width: 50%;" class="w3-round"><br><br>
+    <h4><b> <%= username.toUpperCase() %></b></h4>
+  </div>
+  <div class="w3-bar-block">
+    <a href="/afterauth" onclick="w3_close()" class="w3-bar-item w3-button w3-padding"><i class="fa fa-home fa-fw w3-margin-right"></i>HOME</a> 
+    <a href="#favourites" onclick="w3_close()" class="w3-bar-item w3-button w3-padding"><i class="fas fa-heart fa-fw w3-margin-right"></i>FAVOURITES</a> 
+    <a href="/updateprofile" onclick="w3_close()" class="w3-bar-item w3-button w3-padding"><i class="fa fa-refresh fa-fw w3-margin-right"></i>UPDATE PROFILE</a> 
+    <a href="#" onclick="openDeleteModal()" class="w3-bar-item w3-button w3-padding w3-text-red">
+      <i class="fa fa-trash fa-fw w3-margin-right"></i>DELETE PROFILE
+    </a>
+  </div>
+</nav>
+
+<!-- for responsiveness make it into a pop up thing -->
+<div class="w3-overlay w3-hide-large w3-animate-opacity" onclick="w3_close()" style="cursor:pointer" title="close side menu" id="myOverlay"></div>
+
+<!-- !PAGE CONTENT! -->
+<div class="w3-main" style="margin-left:300px">
+
+  <!-- Header -->
+  <header id="favourites">
+    <span class="w3-button w3-hide-large w3-xxlarge w3-hover-text-grey" onclick="w3_open()"><i class="fa fa-bars"></i></span>
+    <div class="w3-container">
+    <h1><b>My Favourite Songs</b></h1>
+    <div class="w3-section w3-bottombar w3-padding-16">
+      <span class="w3-margin-right">Filter:</span> 
+      <button class="w3-button w3-black">ALL</button>
+      <button class="w3-button w3-white"><i class="fa fa-search w3-margin-right"></i>AUTHOR</button>
+      <button class="w3-button w3-white w3-hide-small"><i class="fa fa-photo w3-margin-right"></i>NAME</button>
+      <button class="w3-button w3-white w3-hide-small"><i class="fa fa-map-pin w3-margin-right"></i>DATE</button>
+    </div>
+    </div>
+  </header>
+  
+  <!-- favourite songs -->
+  <div class="w3-row-padding">
+    <% for (let i = 0; i < personalSongs.length; i++) { %>
+      <div class="w3-third w3-container w3-margin-bottom">
+        <img src="<%= personalSongs[i].src %>" alt="<%= personalSongs[i].alt %>" style="width: 100%; display: block; margin: 0 auto;">
+        <div class="w3-container w3-white">
+          <p style="word-wrap: break-word;"><%= personalSongs[i].songtitle %></p>
+          <p style="word-wrap: break-word;"><%= personalSongs[i].songauthor %></p>
+          <p style="word-wrap: break-word;"><%= personalSongs[i].songdate %></p>
+
+
+        </div>
+      </div>
+      <% if ((i + 1) % 6 === 0) { %>
+        </div><div class="w3-row-padding">
+      <% } %>
+    <% } %>
+  </div>
+  
+  <!-- page -->
+  <div class="w3-center w3-padding-32">
+    <div class="w3-bar">
+      <% for (let j = 1; j <= totalPages; j++) { %>
+        <a href="/useraccount/<%= j %>" class="w3-bar-item w3-button <%= currentPage === j ? 'w3-black' : 'w3-hover-black' %>"><%= j %></a>
+      <% } %>
+    </div>
+  </div>
+
+
+  <div class="w3-container w3-padding-large" style="margin-bottom:32px">
+    <h4><b>My Bio</b></h4>
+    <p> <%= bio%>
+    </div>
+
+
+  <!-- footer -->
+  <footer class="w3-container w3-padding-32 w3-dark-grey">
+  <div class="w3-row-padding">
+    <div class="w3-third">
+      <h3>Eric/Vikas website</h3>
+      <p>This website is made by Eric Tesema and Vikas Mackevicius. In this website you are able to do a lot of things: 
+        Convert your spotify playlists into youtube playlists.
+        Append songs into your favourites.
+        Change your profile.
+      </p>
+    </div>
+
+  </div>
+  </footer>
+  
+  <div class="w3-black w3-center w3-padding-24"><%= username %> profile</div>
+
+<!-- End page content -->
+</div>
+
+
+<div id="deleteModal" class="w3-modal">
+  <div class="w3-modal-content w3-animate-zoom" style="position: relative; background-color: #fefefe; margin: 10% auto; padding: 20px; border: 1px solid #888; width: 50%; box-shadow: 0 4px 8px rgba(0,0,0,0.1); border-radius: 8px;">
+    <div class="w3-container w3-teal" style="padding: 15px; color: #fff; border-bottom: 1px solid #ddd;">
+      <h2>Are you sure?</h2>
+    </div>
+    <div class="w3-container" style="padding: 20px;">
+      <form id="deleteForm">
+        <div class="w3-section" style="margin-bottom: 20px;">
+          <label for="username">To delete your account, enter your current username:</label>
+          <div id="messageContainer"></div>
+          <input type="text" class="w3-input" id="username" placeholder="Type <%= username %>...." style="width: 100%; padding: 10px; margin: 5px 0; box-sizing: border-box;">
+        </div>
+        <a href="/delete" id="deleteButton" class="w3-button" style="display: inline-block; padding: 10px 20px; text-align: center; text-decoration: none; color: #fff; border-radius: 4px; cursor: pointer; background-color: grey; pointer-events: none;">Delete Profile</a>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+<script>
+  //I have no idea why I need this here, it didnt work inside the scripts.js
+  var deleteModal = document.getElementById('deleteModal');
+  window.onclick = function(event) {
+    if (event.target == deleteModal) {
+        deleteModal.style.display = "none";
+      }
+  }
+
+  function openDeleteModal() {
+    document.getElementById('deleteModal').style.display = 'block';
+  }
+
+  //delay timer for ajax request
+  var delayTimer;
+  function checkUsername() {
+    clearTimeout(delayTimer);
+
+    delayTimer = setTimeout(function () {
+      var enteredUsername = document.getElementById('username').value;
+
+      //make a POST request using the parametres
+      $.ajax({
+        type: 'POST',
+        url: '/checkusername',
+        data: { username: enteredUsername },
+        //if works make the button do the specifie things
+        success: function(response) {
+          if (response.match) {
+            var deleteButton = document.getElementById('deleteButton');
+            deleteButton.style.backgroundColor = 'red';
+            deleteButton.style.pointerEvents = 'auto';
+            deleteButton.style.cursor = 'pointer';
+          } else {
+            //instead of an alert make it look nice
+            messageContainer.innerHTML = '<div class="w3-text-red">Username does not match.</div>';
+            var deleteButton = document.getElementById('deleteButton');
+            deleteButton.style.backgroundColor = 'grey';
+            deleteButton.style.pointerEvents = 'none';
+            deleteButton.style.cursor = 'default';
+          }
+        },
+        error: function(error) {
+          console.error('Error checking username:', error);
+        }
+      });
+    }, 1000);
+  }
+  //trigger this every key input hence the delay
+  $('#username').on('keyup', checkUsername);
+
+</script>
+
+<script src="/js/scripts.js"> </script>
+
+
+
+</body>
+</html>

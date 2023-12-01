@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register</title>
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <link rel="stylesheet" href="/css/reglog.css">
+
+</head>
+<body class="reg-body">
+
+  <div class="reg-container w3-container w3-card-4">
+    <h2 class="w3-text-red">Register</h2>
+    <form action="/register" method="post">
+      <label for="username">Username:</label>
+      <input type="text" id="username" name="username" required>
+
+      <label for="email">Email:</label>
+      <input type="text" id="email" name="email" required>
+
+      <label for="password">Password:</label>
+      <input type="password" id="password" name="password" required>
+
+      <button class="w3-button w3-red reg-btn" type="submit">Register</button>
+    </form>
+
+    <p>Already have an account? <a class="reg-a" href="/login">Login here</a></p>
+  </div>
+
+</body>
+</html>
