@@ -1,0 +1,14 @@
+<div class="w3-row-padding">
+    <% for (let i = 0; i < allSongs.length; i++) { %>
+        <div class="w3-third w3-container w3-margin-bottom" style="display: inline-block; padding: 30px;">
+            <img src="<%= allSongs[i].src %>" alt="<%= allSongs[i].alt %>" style="width: 100%; display: block; margin: 0 auto; border-radius: 8px;">
+            <div class="w3-container" style="text-align: center; padding: 15px; border-radius: 10px; background-color: rgba(255, 255, 255, 0.8); position: relative;">
+                <p style="word-wrap: break-word; font-weight: bold; margin-bottom: 5px; color:black"><%= allSongs[i].songtitle %></p>
+                <p style="word-wrap: break-word; color: black;"><%= allSongs[i].songauthor %></p>
+                <div class="w3-container w3-padding">
+                    <button class="w3-btn w3-round w3-pink" onclick="addToFavorites('<%= allSongs[i].songtitle %>', '<%= allSongs[i].songauthor %>', '<%= allSongs[i].src %>')"><i class="fas fa-heart"></i> Favorite</button>
+                </div>
+            </div>
+        </div>
+    <% } %>
+</div>

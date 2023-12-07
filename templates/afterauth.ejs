@@ -93,64 +93,42 @@
             
         </div>
 
-       
+        <div id="songList"></div>
 
-        <div class="w3-container scroll" style="overflow-x: auto; background: url('/Images/song-part-black.jpeg') no-repeat; background-size: cover; height: 800px">
-            <div class="w3-row-padding">
-                <% for (let i = 0; i < allSongs.length; i++) { %>
-                    <div class="w3-third w3-container w3-margin-bottom" style="display: inline-block; padding: 30px;">
-                        <img src="<%= allSongs[i].src %>" alt="<%= allSongs[i].alt %>" style="width: 100%; display: block; margin: 0 auto; border-radius: 8px;">
-                        <div class="w3-container" style="text-align: center; padding: 15px; border-radius: 10px; background-color: rgba(255, 255, 255, 0.8); position: relative;">
-                            <p style="word-wrap: break-word; font-weight: bold; margin-bottom: 5px; color:black"><%= allSongs[i].songtitle %></p>
-                            <p style="word-wrap: break-word; color: black;"><%= allSongs[i].songauthor %></p>
-                            <div class="w3-container w3-padding">
-                                <button class="w3-btn w3-round w3-pink" onclick="addToFavorites('<%= allSongs[i].songtitle %>', '<%= allSongs[i].songauthor %>')"><i class="fas fa-heart"></i> Favorite</button>
-                            </div>
-                        </div>
-                    </div>
-                <% } %>
-            </div>
-        </div>
     </div>
 
-    <!-- personal song part-->
-    <div class="w3-black" id="songnav">
-        <div class="w3-container w3-content w3-padding-64" style="max-width:1300px; margin: 0 auto;">
-            <h2 class="w3-wide w3-center">Which favourited song do you want to look up?</h2>
-            <p class="w3-opacity w3-center"><i>Do it here!</i></p><br>
-            <div class="w3-container w3-margin w3-round-large w3-row-padding" style="background: none;">
-                <div class="w3-col s12 m4" style="margin-bottom: 20px;">
-                    <label for="songName" class="w3-text-white" style="display: block; margin-bottom: 5px;">Song Name:</label>
-                    <input type="text" id="songName" name="songName" placeholder=" " class="w3-input" style="border: none; border-bottom: 1px solid white; background: none; color: white;">
-                </div>
-                <div class="w3-col s12 m4" style="margin-bottom: 20px;">
-                    <label for="artist" class="w3-text-white" style="display: block; margin-bottom: 5px;">Artist:</label>
-                    <input type="text" id="artist" name="artist" placeholder=" " class="w3-input" style="border: none; border-bottom: 1px solid white; background: none; color: white;">
-                </div>
-            </div>
-            
-        </div>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
-    
+    <!-- Add this script section after including jQuery -->
+    <script>
+        $(document).ready(function () {
+            // Function to perform AJAX search
+            function performSearch() {
+                var songName = $('#songName').val();
+                var artist = $('#artist').val();
 
-        <div class="w3-container scroll" style="overflow-x: auto; background: url('/Images/song-part-black.jpeg') no-repeat; background-size: cover; height: 800px">
-            <div class="w3-row-padding">
-                <% for (let i = 0; i < personalSongs.length; i++) { %>
-                    <div class="w3-third w3-container w3-margin-bottom" style="display: inline-block; padding: 30px;">
-                        <img src="<%= personalSongs[i].src %>" alt="<%= personalSongs[i].alt %>" style="width: 100%; display: block; margin: 0 auto; border-radius: 8px;">
-                        <div class="w3-container" style="text-align: center; padding: 15px; border-radius: 10px; background-color: rgba(255, 255, 255, 0.8); position: relative;">
-                            <p style="word-wrap: break-word; font-weight: bold; margin-bottom: 5px; color:black"><%= personalSongs[i].songtitle %></p>
-                            <p style="word-wrap: break-word; color: black;"><%= personalSongs[i].songauthor %></p>
-                            <div class="w3-container w3-padding">
-                                <button class="w3-btn w3-round w3-pink" onclick="unfavorite('<%= personalSongs[i].songtitle %>', '<%= personalSongs[i].songauthor %>')"><i class="fas fa-heart"></i> Unfavorite</button>
-                            </div>
-                        </div>
-                    </div>
-                <% } %>
-            </div>
-        </div>
-    </div>
-    
+                // AJAX request
+                $.ajax({
+                    type: 'GET',
+                    url: '/search', // Replace with your server-side search endpoint
+                    data: { songName: songName, artist: artist },
+                    success: function (data) {
+                        // Update the song list with the search results
+                        $('#songList').html(data);
+                    },
+                    error: function (error) {
+                        console.error('Error performing search:', error);
+                    }
+                });
+            }
+
+            // Attach the performSearch function to the input change event
+            $('#songName, #artist').on('input', function () {
+                performSearch();
+            });
+        });
+    </script>
+
 
     <!-- Convert model -->
     <div id="ticketModal" class="w3-modal">

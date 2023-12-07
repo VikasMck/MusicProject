@@ -35,14 +35,14 @@ function w3_close() {
 }
 
 // Add this JavaScript function
-function addToFavorites(songTitle, songAuthor) {
+function addToFavorites(songTitle, songAuthor, songImage) {
   // Make an AJAX request to your server to add the song to favorites
   fetch('/favorite', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ songTitle, songAuthor }),
+    body: JSON.stringify({ songTitle, songAuthor, songImage }),
   })
   .then(response => {
     if (response.ok) {

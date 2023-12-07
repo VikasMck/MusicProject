@@ -155,6 +155,7 @@ app.post('/register', async (req, res) => {
   }
 });
 
+
 //pain
 app.post('/login', async (req, res) => {
   const { username, password } = req.body;
@@ -421,7 +422,7 @@ app.get('/afterauth', (req, res) => {
 
 
   // res.render('afterauth', { username: username });
-  res.render('afterauth', {allSongs:allSongs, personalSongs: personalSongs, username: username});
+  res.render('afterauth', {allSongs:allSongs, username: username});
 
   } 
   else {
@@ -541,7 +542,9 @@ async function getPlaylistItems(token, playlistId) {
         const track = item.track;
         const songName = track.name;
         const artists = track.artists.map(artist => artist.name).join(', ');
-        const fullName = `${songName} by ${artists}`;
+        const image = track.album.images[0].url;
+        const fullName = `${songName} by   ${artists} image ${image}`;
+        console.log(track);
         return fullName;
       });
 
@@ -593,38 +596,37 @@ async function getVideoIds(ytApiKey, videos) {
   return videoIds;
 }
 
-function addOrUpdateSong(allSongs, formattedSongTitle, songAuthor) {
+function addOrUpdateSong(allSongs, formattedSongTitle, formattedSongAuthor, songImage) {
   // Check if an object with the same title and author already exists
-  const existingSongIndex = allSongs.findIndex(song => song.songtitle === formattedSongTitle && song.songauthor === songAuthor);
+  const existingSongIndex = allSongs.findIndex(song => song.songtitle === formattedSongTitle && song.songauthor === formattedSongAuthor);
 
   if (existingSongIndex !== -1) {
     // Object with the same title and author already exists, you can choose to skip or update
-    console.log(`Song with title '${formattedSongTitle}' and author '${songAuthor}' already exists.`);
+    console.log(`Song with title '${formattedSongTitle}' and author '${formattedSongAuthor}' already exists.`);
     // You can update the existing entry here if needed
   } else {
     // Object does not exist, push the new entry
-    // allSongs.push({
-    //   src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Temp_plate.svg/601px-Temp_plate.svg.png',
-    //   alt: 'Photo', // You can customize this if needed
-    //   songtitle: formattedSongTitle,
-    //   songauthor: songAuthor,
-    //   // Add other properties as needed
-    // });
+    allSongs.push({
+      src: songImage,
+      alt: 'Photo', // You can customize this if needed
+      songtitle: formattedSongTitle,
+      songauthor: formattedSongAuthor,
+    });
 
 
     //Temp
-    allSongs.push({
-      src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Temp_plate.svg/601px-Temp_plate.svg.png',
-      alt: 'Photo', // You can customize this if needed
-      songtitle: 'title',
-      songauthor: 'title',
-    })
-    allSongs.push({
-      src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Temp_plate.svg/601px-Temp_plate.svg.png',
-      alt: 'Photo', // You can customize this if needed
-      songtitle: 'title1',
-      songauthor: 'title1',
-    })
+    // allSongs.push({
+    //   src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Temp_plate.svg/601px-Temp_plate.svg.png',
+    //   alt: 'Photo', // You can customize this if needed
+    //   songtitle: 'title',
+    //   songauthor: 'title',
+    // })
+    // allSongs.push({
+    //   src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Temp_plate.svg/601px-Temp_plate.svg.png',
+    //   alt: 'Photo', // You can customize this if needed
+    //   songtitle: 'title1',
+    //   songauthor: 'title1',
+    // })
   }
 }
 
@@ -632,7 +634,7 @@ function addOrUpdateSong(allSongs, formattedSongTitle, songAuthor) {
 // Add a new endpoint for handling favorite requests
 app.post('/favorite', (req, res) => {
   try {
-    const { songTitle, songAuthor } = req.body;
+    const { songTitle, songAuthor, songImage } = req.body;
 
     // Check if the song is already in personalSongs
     const existingSongIndex = personalSongs.findIndex(song => song.songtitle === songTitle && song.songauthor === songAuthor);
@@ -640,12 +642,14 @@ app.post('/favorite', (req, res) => {
     if (existingSongIndex === -1) {
       // Add the song to personalSongs
       personalSongs.push({
-        src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Temp_plate.svg/601px-Temp_plate.svg.png',
+        src: songImage,
         alt: 'Photo',
         songtitle: songTitle,
         songauthor: songAuthor,
         // Add other properties as needed
       });
+
+
 
       console.log(`Song '${songTitle}' by '${songAuthor}' added to favorites.`);
       res.status(200).json({ message: 'Song added to favorites.' });
@@ -684,7 +688,19 @@ app.post('/unfavorite', (req, res) => {
   }
 });
 
+// Search endpoint
+app.get('/search', (req, res) => {
+  const { songName, artist } = req.query;
 
+  // Implement your search logic here
+  const searchResults = allSongs.filter(song =>
+      song.songtitle.toLowerCase().includes(songName.toLowerCase()) &&
+      song.songauthor.toLowerCase().includes(artist.toLowerCase())
+  );
+
+  // Render the search results
+  res.render('songList', { allSongs: searchResults });
+});
 
 
 app.post('/convert', async (req, res) => {
@@ -701,13 +717,16 @@ app.post('/convert', async (req, res) => {
 
     songs.forEach(song => {
       // Split the song and author
-      const [songTitle, songAuthor] = song.split(' by ');
+      const [songTitle, songPart] = song.split(' by ');
+      const [songAuthor, songImage] = songPart.split(' image ');
     
       // Remove 'by' from the song title
       const formattedSongTitle = songTitle.replace(' by ', '');
+
+      const formattedSongAuthor = songAuthor.replace(' image ', '');
     
       // Call the function to add or update the song
-      addOrUpdateSong(allSongs, formattedSongTitle, songAuthor);
+      addOrUpdateSong(allSongs, formattedSongTitle, formattedSongAuthor, songImage);
     });
 
     console.log(allSongs)

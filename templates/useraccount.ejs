@@ -53,7 +53,6 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", sans-serif}
       <button class="w3-button w3-black">ALL</button>
       <button class="w3-button w3-white"><i class="fa fa-search w3-margin-right"></i>AUTHOR</button>
       <button class="w3-button w3-white w3-hide-small"><i class="fa fa-photo w3-margin-right"></i>NAME</button>
-      <button class="w3-button w3-white w3-hide-small"><i class="fa fa-map-pin w3-margin-right"></i>DATE</button>
     </div>
     </div>
   </header>
@@ -66,9 +65,9 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", sans-serif}
         <div class="w3-container w3-white">
           <p style="word-wrap: break-word;"><%= personalSongs[i].songtitle %></p>
           <p style="word-wrap: break-word;"><%= personalSongs[i].songauthor %></p>
-          <p style="word-wrap: break-word;"><%= personalSongs[i].songdate %></p>
-
-
+        </div>
+        <div class="w3-container w3-padding">
+          <button class="w3-btn w3-round w3-black" onclick="unfavorite('<%= personalSongs[i].songtitle %>', '<%= personalSongs[i].songauthor %>')">Unfavorite</button>
         </div>
       </div>
       <% if ((i + 1) % 6 === 0) { %>
