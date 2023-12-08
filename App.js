@@ -72,6 +72,10 @@ const connectToDatabase = async () => {
   }
 };
 
+function sanitizeUsername(username) {
+  return username.replace(/[^a-zA-Z0-9_]/g, '');
+}
+
 const closeDatabaseConnection = () => {
   sql.close();
 };
@@ -136,7 +140,7 @@ app.post('/register', async (req, res) => {
           songid int identity(1,1) primary key,
           songtitle varchar(255) null,
           songauthor varchar(255) null,
-          songdate varchar(255) null
+          songimage varchar(max) null
         )
       `;
       await sql.query(createTableQuery);
@@ -185,6 +189,9 @@ app.post('/login', async (req, res) => {
           req.session.userimage = userimage;
           req.session.bio = bio;
           req.session.email = email;
+
+          await updatePersonalSongs(username);
+
           res.redirect('/afterauth');
         } 
         else {
@@ -492,6 +499,10 @@ app.post('/checkusername', (req, res) => {
 app.get('/logout', (req, res) => {
   req.session.authenticated = false;
   const filePath = path.join(__dirname, 'templates', 'preauth.ejs');
+
+  personalSongs.length = 0;
+
+
   res.render(filePath, { allSongs: allSongs }, (err, html) => {
     if (err) {
           console.error(err);
@@ -634,61 +645,93 @@ function addOrUpdateSong(allSongs, formattedSongTitle, formattedSongAuthor, song
 }
 
 
-// Add a new endpoint for handling favorite requests
-app.post('/favorite', (req, res) => {
+
+async function updatePersonalSongs(username) {
+  const updatedPersonalSongs = await fetchPersonalSongs(username);
+
+  // Update the personalSongs array
+  personalSongs.length = 0;
+  Array.prototype.push.apply(personalSongs, updatedPersonalSongs);
+}
+
+// Function to fetch personal songs from the database
+async function fetchPersonalSongs(username) {
+  const pool = await sql.connect(config);
+
+  const result = await pool.request()
+    .query(`SELECT * FROM ${username}_basket`);
+
+  return result.recordset;
+}
+
+app.post('/favorite', async (req, res) => {
   try {
+    const username = sanitizeUsername(req.session.username);
+
+    const pool = await sql.connect(config);
+
     const { songTitle, songAuthor, songImage } = req.body;
 
-    // Check if the song is already in personalSongs
-    const existingSongIndex = personalSongs.findIndex(song => song.songtitle === songTitle && song.songauthor === songAuthor);
+    //check if exists alr
+    const existingSong = await pool.request()
+      .query(`SELECT TOP 1 * FROM ${username}_basket WHERE songtitle = '${songTitle}' AND songauthor = '${songAuthor}'`);
 
-    if (existingSongIndex === -1) {
-      // Add the song to personalSongs
-      personalSongs.push({
-        src: songImage,
-        alt: 'Photo',
-        songtitle: songTitle,
-        songauthor: songAuthor,
-      });
+    if (existingSong.recordset.length === 0) {
+      //add
+      await pool.request()
+        .query(`INSERT INTO ${username}_basket (songtitle, songauthor, songimage) VALUES ('${songTitle}', '${songAuthor}', '${songImage}')`);
 
+      //update array with info
+      await updatePersonalSongs(username);
 
-
-      console.log(`Song '${songTitle}' by '${songAuthor}' added to favorites.`);
-      res.status(200).json({ message: 'Song added to favorites.' });
+      res.status(200).json({ success: true, message: 'Song added to basket successfully' });
     } else {
-      console.log(`Song '${songTitle}' by '${songAuthor}' already exists in favorites.`);
-      res.status(200).json({ message: 'Song already in favorites.' });
+      res.status(409).json({ success: false, message: 'Song already exists in the basket' });
     }
   } catch (error) {
-    console.error(`Error in /favorite endpoint: ${error.message}`);
-    res.status(500).json({ error: 'Internal Server Error' });
+    console.error(error);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  } finally {
+    sql.close();
   }
 });
 
 
-// Add this new endpoint in your Node.js server
-app.post('/unfavorite', (req, res) => {
+app.post('/unfavorite', async (req, res) => {
   try {
+    const username = sanitizeUsername(req.session.username);
+
+    const pool = await sql.connect(config);
+
     const { songTitle, songAuthor } = req.body;
 
-    // Find the index of the song in personalSongs
-    const songIndex = personalSongs.findIndex(song => song.songtitle === songTitle && song.songauthor === songAuthor);
+    const existingSong = await pool.request()
+      .input('songTitle', sql.VarChar(255), songTitle)
+      .input('songAuthor', sql.VarChar(255), songAuthor)
+      .query(`SELECT TOP 1 * FROM ${username}_basket WHERE songtitle = @songTitle AND songauthor = @songAuthor`);
 
-    if (songIndex !== -1) {
-      // Remove the song from personalSongs
-      personalSongs.splice(songIndex, 1);
+    if (existingSong.recordset.length > 0) {
+      const deleteResult = await pool.request()
+        .input('songTitle', sql.VarChar(255), songTitle)
+        .input('songAuthor', sql.VarChar(255), songAuthor)
+        .query(`DELETE FROM ${username}_basket WHERE songtitle = @songTitle AND songauthor = @songAuthor`);
 
-      console.log(`Song '${songTitle}' by '${songAuthor}' removed from favorites.`);
-      res.status(200).json({ message: 'Song removed from favorites.' });
+      if (deleteResult.rowsAffected.length > 0) {
+        await updatePersonalSongs(username);
+
+        res.status(200).json({ success: true, message: 'Song removed from favorites successfully' });
+      } else {
+        res.status(500).json({ success: false, message: 'Failed to remove the song from favorites' });
+      }
     } else {
-      console.log(`Song '${songTitle}' by '${songAuthor}' not found in favorites.`);
-      res.status(200).json({ message: 'Song not found in favorites.' });
+      res.status(404).json({ success: false, message: 'Song not found in favorites' });
     }
   } catch (error) {
-    console.error(`Error in /unfavorite endpoint: ${error.message}`);
-    res.status(500).json({ error: 'Internal Server Error' });
+    console.error(error);
+    res.status(500).json({ success: false, message: 'Internal server error' });
   }
 });
+
 
 function handleSearch(req, res, viewName) {
   const { songName, artist } = req.query;

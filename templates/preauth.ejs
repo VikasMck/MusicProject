@@ -231,7 +231,7 @@
     
         async function execute(title, videoIds) {
         try {
-            // Step 1: Create the playlist
+            //creates the playlist
             const playlistResponse = await gapi.client.youtube.playlists.insert({
             "part": ["snippet"],
             "resource": {
@@ -244,7 +244,7 @@
             const playlistId = playlistResponse.result.id;
             console.log(`Playlist created with ID: ${playlistId}`);
     
-            // Step 2: Add videos to the playlist
+            //adds videos to the playlist
             for (const videoId of videoIds) {
             const playlistItemResponse = await gapi.client.youtube.playlistItems.insert({
                 "part": ["snippet"],

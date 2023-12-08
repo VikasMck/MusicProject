@@ -57,7 +57,7 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", sans-serif}
   <div class="w3-row-padding">
     <% for (let i = 0; i < personalSongs.length; i++) { %>
       <div class="w3-third w3-container w3-margin-bottom">
-        <img src="<%= personalSongs[i].src %>" alt="<%= personalSongs[i].alt %>" style="width: 100%; display: block; margin: 0 auto;">
+        <img src="<%= personalSongs[i].songimage %>" alt="<%= personalSongs[i].alt %>" style="width: 100%; display: block; margin: 0 auto;">
         <div class="w3-container w3-white">
           <p style="word-wrap: break-word;"><%= personalSongs[i].songtitle %></p>
           <p style="word-wrap: break-word;"><%= personalSongs[i].songauthor %></p>
