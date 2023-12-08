@@ -99,6 +99,57 @@
         </div>
         <div id="songList"></div>
 
+        <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+        <!-- Add this script section after including jQuery -->
+        <script>
+            $(document).ready(function () {
+                // Function to perform AJAX search
+                function performSearch() {
+                    var songName = $('#songName').val();
+                    var artist = $('#artist').val();
+
+                    // Check if both input fields are empty
+                    if (!songName && !artist) {
+                        // Request all songs or display a default list
+                        $.ajax({
+                            type: 'GET',
+                            url: '/all-songs', // Replace with your endpoint for retrieving all songs
+                            success: function (data) {
+                                $('#songList').html(data);
+                            },
+                            error: function (error) {
+                                console.error('Error retrieving all songs:', error);
+                            }
+                        });
+                    }
+
+                    // AJAX request
+                    $.ajax({
+                        type: 'GET',
+                        url: '/search', // Replace with your server-side search endpoint
+                        data: { songName: songName, artist: artist },
+                        success: function (data) {
+                            // Update the song list with the search results
+                            $('#songList').html(data);
+                        },
+                        error: function (error) {
+                            console.error('Error performing search:', error);
+                        }
+                    });
+                }
+
+                // Attach the performSearch function to the input change event
+                $('#songName, #artist').on('input', function () {
+                    performSearch();
+                });
+
+                // Perform an initial search when the page loads
+                performSearch();
+            });
+
+        </script>
+
     </div>
 
     <!-- Convert model -->

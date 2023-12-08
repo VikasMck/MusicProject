@@ -107,6 +107,21 @@
                 var songName = $('#songName').val();
                 var artist = $('#artist').val();
 
+                // Check if both input fields are empty
+                if (!songName && !artist) {
+                    // Request all songs or display a default list
+                    $.ajax({
+                        type: 'GET',
+                        url: '/all-songs', // Replace with your endpoint for retrieving all songs
+                        success: function (data) {
+                            $('#songList').html(data);
+                        },
+                        error: function (error) {
+                            console.error('Error retrieving all songs:', error);
+                        }
+                    });                   
+                }
+
                 // AJAX request
                 $.ajax({
                     type: 'GET',
@@ -126,7 +141,11 @@
             $('#songName, #artist').on('input', function () {
                 performSearch();
             });
+
+            // Perform an initial search when the page loads
+            performSearch();
         });
+
     </script>
 
 
