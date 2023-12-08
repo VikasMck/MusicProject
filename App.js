@@ -593,6 +593,9 @@ async function getVideoIds(ytApiKey, videos) {
     }
   }
 
+  console.log("these are the video ids: ")
+  console.log(videoIds)
+
   return videoIds;
 }
 
@@ -731,8 +734,15 @@ app.post('/convert', async (req, res) => {
 
     console.log(allSongs)
 
-    const videoIds = await getVideoIds(ytApiKey, songs);
+    const modifiedSongs = songs.map(song => {
+      // Use regular expression to remove 'image' and URL
+      const modifiedSong = song.replace(/image\s[^ ]+/g, '');
+    
+      // Remove extra whitespaces
+      return modifiedSong.trim();
+    });
 
+    const videoIds = await getVideoIds(ytApiKey, modifiedSongs);
     // Send the videoIds array to the frontend
     res.json({ videoIds });
   } catch (error) {

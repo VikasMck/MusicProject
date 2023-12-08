@@ -97,25 +97,8 @@
             </div>
             
         </div>
+        <div id="songList"></div>
 
-       
-
-        <div class="w3-container scroll" style="overflow-x: auto; background: url('/Images/song-part-black.jpeg') no-repeat; background-size: cover; height: 800px">
-            <div class="w3-row-padding">
-                <% for (let i = 0; i < allSongs.length; i++) { %>
-                    <div class="w3-third w3-container w3-margin-bottom" style="display: inline-block; padding: 30px;">
-                        <img src="<%= allSongs[i].src %>" alt="<%= allSongs[i].alt %>" style="width: 100%; display: block; margin: 0 auto; border-radius: 8px;">
-                        <div class="w3-container" style="text-align: center; padding: 15px; border-radius: 10px; background-color: rgba(255, 255, 255, 0.8); position: relative;">
-                            <p style="word-wrap: break-word; font-weight: bold; margin-bottom: 5px; color:black"><%= allSongs[i].songtitle %></p>
-                            <p style="word-wrap: break-word; color: black;"><%= allSongs[i].songauthor %></p>
-                            <div class="w3-container w3-padding">
-                                <button class="w3-btn w3-round w3-pink" onclick="document.getElementById('loginRegisterModal').style.display='block'"><i class="fas fa-heart"></i> Favorite</button>
-                            </div>
-                        </div>
-                    </div>
-                <% } %>
-            </div>
-        </div>
     </div>
 
     <!-- Convert model -->
@@ -191,7 +174,7 @@
         }
     
         function loadClient() {
-        gapi.client.setApiKey("AIzaSyBkmbCdhgh9MhaTsb1DxR7qQVOe2EsVws4");
+        gapi.client.setApiKey("AIzaSyCoGmWZBade3HK3TI7OahDUi7mpkZNtyyM");
         return gapi.client.load("https://www.googleapis.com/discovery/v1/apis/youtube/v3/rest");
         }
     
@@ -240,7 +223,7 @@
     
         gapi.load("client:auth2", function () {
         gapi.auth2.init({
-            client_id: "78786335679-0j6m6nugv8ctee7ummee4imgmu32ifbe.apps.googleusercontent.com",
+            client_id: "953631011576-u675406ekfjfqkj5obk4pjpv3c4lu07q.apps.googleusercontent.com",
             plugin_name: "name",
         });
         });
