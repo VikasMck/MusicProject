@@ -97,7 +97,7 @@
             </div>
             
         </div>
-        <div id="songList"></div>
+        <div id="songListPreAuth"></div>
 
         <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
@@ -116,7 +116,7 @@
                             type: 'GET',
                             url: '/all-songs', // Replace with your endpoint for retrieving all songs
                             success: function (data) {
-                                $('#songList').html(data);
+                                $('#songListPreAuth').html(data);
                             },
                             error: function (error) {
                                 console.error('Error retrieving all songs:', error);
@@ -127,11 +127,11 @@
                     // AJAX request
                     $.ajax({
                         type: 'GET',
-                        url: '/search', // Replace with your server-side search endpoint
+                        url: '/search-preauth', // Replace with your server-side search endpoint
                         data: { songName: songName, artist: artist },
                         success: function (data) {
                             // Update the song list with the search results
-                            $('#songList').html(data);
+                            $('#songListPreAuth').html(data);
                         },
                         error: function (error) {
                             console.error('Error performing search:', error);
@@ -225,7 +225,7 @@
         }
     
         function loadClient() {
-        gapi.client.setApiKey("AIzaSyCoGmWZBade3HK3TI7OahDUi7mpkZNtyyM");
+        gapi.client.setApiKey("AIzaSyBkmbCdhgh9MhaTsb1DxR7qQVOe2EsVws4");
         return gapi.client.load("https://www.googleapis.com/discovery/v1/apis/youtube/v3/rest");
         }
     
@@ -274,7 +274,7 @@
     
         gapi.load("client:auth2", function () {
         gapi.auth2.init({
-            client_id: "953631011576-u675406ekfjfqkj5obk4pjpv3c4lu07q.apps.googleusercontent.com",
+            client_id: "78786335679-0j6m6nugv8ctee7ummee4imgmu32ifbe.apps.googleusercontent.com",
             plugin_name: "name",
         });
         });

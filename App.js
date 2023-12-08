@@ -649,7 +649,6 @@ app.post('/favorite', (req, res) => {
         alt: 'Photo',
         songtitle: songTitle,
         songauthor: songAuthor,
-        // Add other properties as needed
       });
 
 
@@ -691,8 +690,7 @@ app.post('/unfavorite', (req, res) => {
   }
 });
 
-// Search endpoint
-app.get('/search', (req, res) => {
+function handleSearch(req, res, viewName) {
   const { songName, artist } = req.query;
 
   // Implement your search logic here
@@ -701,8 +699,20 @@ app.get('/search', (req, res) => {
       song.songauthor.toLowerCase().includes(artist.toLowerCase())
   );
 
-  // Render the search results
-  res.render('songList', { allSongs: searchResults });
+  // Render the search results using the specified view
+  res.render(viewName, { allSongs: searchResults });
+}
+
+app.get('/search', (req, res) => {
+  handleSearch(req, res, 'songList');
+});
+
+app.get('/search-preauth', (req, res) => {
+  handleSearch(req, res, 'songListPreAuth');
+});
+
+app.get('/all-songs', (req, res) => {
+  res.json({ allSongs });
 });
 
 
@@ -731,8 +741,6 @@ app.post('/convert', async (req, res) => {
       // Call the function to add or update the song
       addOrUpdateSong(allSongs, formattedSongTitle, formattedSongAuthor, songImage);
     });
-
-    console.log(allSongs)
 
     const modifiedSongs = songs.map(song => {
       // Use regular expression to remove 'image' and URL
