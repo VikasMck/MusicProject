@@ -649,12 +649,12 @@ function addOrUpdateSong(allSongs, formattedSongTitle, formattedSongAuthor, song
 async function updatePersonalSongs(username) {
   const updatedPersonalSongs = await fetchPersonalSongs(username);
 
-  // Update the personalSongs array
+  //update db
   personalSongs.length = 0;
   Array.prototype.push.apply(personalSongs, updatedPersonalSongs);
 }
 
-// Function to fetch personal songs from the database
+//fetch songs from db
 async function fetchPersonalSongs(username) {
   const pool = await sql.connect(config);
 
@@ -736,13 +736,11 @@ app.post('/unfavorite', async (req, res) => {
 function handleSearch(req, res, viewName) {
   const { songName, artist } = req.query;
 
-  // Implement your search logic here
   const searchResults = allSongs.filter(song =>
       song.songtitle.toLowerCase().includes(songName.toLowerCase()) &&
       song.songauthor.toLowerCase().includes(artist.toLowerCase())
   );
 
-  // Render the search results using the specified view
   res.render(viewName, { allSongs: searchResults });
 }
 
@@ -772,29 +770,23 @@ app.post('/convert', async (req, res) => {
     console.log(songs);
 
     songs.forEach(song => {
-      // Split the song and author
       const [songTitle, songPart] = song.split(' by ');
       const [songAuthor, songImage] = songPart.split(' image ');
     
-      // Remove 'by' from the song title
       const formattedSongTitle = songTitle.replace(' by ', '');
 
       const formattedSongAuthor = songAuthor.replace(' image ', '');
     
-      // Call the function to add or update the song
       addOrUpdateSong(allSongs, formattedSongTitle, formattedSongAuthor, songImage);
     });
 
     const modifiedSongs = songs.map(song => {
-      // Use regular expression to remove 'image' and URL
       const modifiedSong = song.replace(/image\s[^ ]+/g, '');
     
-      // Remove extra whitespaces
       return modifiedSong.trim();
     });
 
     const videoIds = await getVideoIds(ytApiKey, modifiedSongs);
-    // Send the videoIds array to the frontend
     res.json({ videoIds });
   } catch (error) {
     console.error(`Error in /convert endpoint: ${error.message}`);

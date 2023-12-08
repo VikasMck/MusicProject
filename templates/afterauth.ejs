@@ -9,6 +9,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="/css/style.css">
+
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
 </head>
 <body>
 
@@ -78,9 +81,9 @@
     <!-- all song part-->
     <div class="w3-black" id="songnav">
         <div class="w3-container w3-content w3-padding-64" style="max-width:1300px; margin: 0 auto;">
-            <h2 class="w3-wide w3-center">Which song do you want to look up?</h2>
-            <p class="w3-opacity w3-center"><i>Do it here!</i></p><br>
-            <div class="w3-container w3-margin w3-round-large w3-row-padding" style="background: none;">
+            <h2 class="w3-wide w3-center">Which song in your playlist do you want to look up?</h2>
+            <p class="w3-opacity w3-center"><i>Do it here after converting the playlist! </i></p><br>
+            <div class="w3-container w3-margin w3-round-large w3-row-padding" style="background: none; display: flex; justify-content: center; align-items: center;">
                 <div class="w3-col s12 m4" style="margin-bottom: 20px;">
                     <label for="songName" class="w3-text-white" style="display: block; margin-bottom: 5px;">Song Name:</label>
                     <input type="text" id="songName" name="songName" placeholder=" " class="w3-input" style="border: none; border-bottom: 1px solid white; background: none; color: white;">
@@ -89,193 +92,43 @@
                     <label for="artist" class="w3-text-white" style="display: block; margin-bottom: 5px;">Artist:</label>
                     <input type="text" id="artist" name="artist" placeholder=" " class="w3-input" style="border: none; border-bottom: 1px solid white; background: none; color: white;">
                 </div>
-            </div>
+            </div>            
             
         </div>
 
-        <div id="songList"></div>
+        <div id="songList" style="overflow: auto; max-height: 800px; background-image: url('/images/song-part-black.jpeg'); background-size: cover; background-position: center;"></div>
 
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-
-    <!-- Add this script section after including jQuery -->
-    <script>
-        $(document).ready(function () {
-            // Function to perform AJAX search
-            function performSearch() {
-                var songName = $('#songName').val();
-                var artist = $('#artist').val();
-
-                // Check if both input fields are empty
-                if (!songName && !artist) {
-                    // Request all songs or display a default list
-                    $.ajax({
-                        type: 'GET',
-                        url: '/all-songs', // Replace with your endpoint for retrieving all songs
-                        success: function (data) {
-                            $('#songList').html(data);
-                        },
-                        error: function (error) {
-                            console.error('Error retrieving all songs:', error);
-                        }
-                    });                   
-                }
-
-                // AJAX request
-                $.ajax({
-                    type: 'GET',
-                    url: '/search', // Replace with your server-side search endpoint
-                    data: { songName: songName, artist: artist },
-                    success: function (data) {
-                        // Update the song list with the search results
-                        $('#songList').html(data);
-                    },
-                    error: function (error) {
-                        console.error('Error performing search:', error);
-                    }
-                });
-            }
-
-            // Attach the performSearch function to the input change event
-            $('#songName, #artist').on('input', function () {
-                performSearch();
-            });
-
-            // Perform an initial search when the page loads
-            performSearch();
-        });
-
-    </script>
-
+    
 
     <!-- Convert model -->
+
     <div id="ticketModal" class="w3-modal">
-        <div class="w3-modal-content w3-animate-top w3-card-4">
-        <header class="w3-container w3-teal w3-center w3-padding-32"> 
-            <span onclick="document.getElementById('ticketModal').style.display='none'" 
-            class="w3-button w3-teal w3-xlarge w3-display-topright">x</span>
-            <h2 class="w3-wide"><i class="w3-margin-right"></i>You got this!</h2>
-        </header>
-        <div class="w3-container">
-            <p><label><i class="fa fa-search "></i>  Add your Spotify link here!</label></p>
-            <input type="text" class="w3-input w3-border" id="playlistLink" placeholder="https://open.spotify.com/playlist/...">
-            <p><label><i class="fa fa-truck"></i>  Name your YouTube playlist</label></p>
-            <input class="w3-input w3-border" type="text" id="playlistName" placeholder="Name....">
-            <button id="convertButton" class="w3-button w3-block w3-teal w3-padding-16 w3-section w3-right" onclick="convertAndExecute()">Done<i class="fa fa-check"></i></button>
-            <button class="w3-button w3-red w3-section" onclick="document.getElementById('ticketModal').style.display='none'">Close <i class="fa fa-remove"></i></button>
-            <p class="w3-right">Need <a href="#" class="w3-text-blue">help?</a></p> <!-- to be added later-->
-        </div>
+        <div class="w3-modal-content w3-animate-top w3-card-4" style="box-shadow: 0 0 30px 10px rgba(128, 128, 128, 0.8);">
+            <header class="w3-container w3-black w3-center w3-padding-32">
+                <span onclick="document.getElementById('ticketModal').style.display='none'" class="w3-button w3-black w3-xlarge w3-display-topright">×</span>
+                <h2 class="w3-wide"><i class="w3-margin-right"></i>Convert Your Playlist Here!</h2>
+            </header>
+            <div class="w3-container w3-grey">
+                <p><label><i class="fa fa-search"></i> Add your Spotify link here!</label></p>
+                <input class="w3-input"
+                type="text" id="playlistLink"
+                placeholder="https://open.spotify.com/playlist/......."
+                style="border: none; border-bottom: 1px solid #000; outline: none; background: transparent; color: #000;">
+
+                <p><label><i class="fa fa-truck"></i> Name your YouTube playlist</label></p>
+                <input class="w3-input"
+                type="text" id="playlistName"
+                placeholder="Name...."
+                style="border: none; border-bottom: 1px solid #000; outline: none; background: transparent; color: #000;">
+
+                <button id="convertButton" class="w3-button w3-block w3-black w3-padding-16 w3-section w3-right" onclick="convertAndExecute()">Done<i class="fa fa-check"></i></button>
+            </div>
         </div>
     </div>
     
-    <script src="https://apis.google.com/js/api.js"></script>
-    <script>
-        async function convertAndExecute() {
-        const playlistLink = document.getElementById('playlistLink').value;
-        const playlistName = document.getElementById('playlistName').value;
     
-        // Extract playlist ID from the link
-        const playlistIdMatch = playlistLink.match(/playlist\/(\w+)/);
-        const spPlaylistId = playlistIdMatch ? playlistIdMatch[1] : null;
-    
-        if (!spPlaylistId) {
-        alert('Invalid Spotify Playlist Link');
-        return;
-        }
-    
-        try {
-        // Make a request to the server to get the videoIds array
-        const response = await fetch('/convert', {
-            method: 'POST',
-            headers: {
-            'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ spPlaylistId }),
-        });
-    
-        if (!response.ok) {
-            throw new Error(`Server returned status: ${response.status}`);
-        }
-    
-        const data = await response.json();
-        const videoIds = data.videoIds;
-    
-        await authenticate();
-        await loadClient();
-        const playlistId = await execute(playlistName, videoIds);
-    
-        // Now you can use the videoIds array as needed
-        console.log('Video IDs:', videoIds);
-        } catch (error) {
-        console.error('Error:', error);
-        alert('An error occurred. Please check the console for details.');
-        }
-    }
-    
-    
-        document.getElementById('convertButton').addEventListener('click', convertAndExecute);
-    
-        function authenticate() {
-        return gapi.auth2.getAuthInstance()
-            .signIn({ scope: "https://www.googleapis.com/auth/youtube.force-ssl" });
-        }
-    
-        function loadClient() {
-        gapi.client.setApiKey("AIzaSyAvgCn9p__sDlixaKr2Yu2RTLsTGVHyZBg");
-        return gapi.client.load("https://www.googleapis.com/discovery/v1/apis/youtube/v3/rest");
-        }
-    
-        async function execute(title, videoIds) {
-        try {
-            // Step 1: Create the playlist
-            const playlistResponse = await gapi.client.youtube.playlists.insert({
-            "part": ["snippet"],
-            "resource": {
-                "snippet": {
-                "title": title
-                }
-            }
-            });
-    
-            const playlistId = playlistResponse.result.id;
-            console.log(`Playlist created with ID: ${playlistId}`);
-    
-            // Step 2: Add videos to the playlist
-            for (const videoId of videoIds) {
-            const playlistItemResponse = await gapi.client.youtube.playlistItems.insert({
-                "part": ["snippet"],
-                "resource": {
-                "snippet": {
-                    "playlistId": playlistId,
-                    "position": 0,
-                    "resourceId": {
-                    "kind": "youtube#video",
-                    "videoId": videoId
-                    }
-                }
-                }
-            });
-    
-            console.log(`Video ${videoId} added to the playlist`);
-            // Handle the results here if needed
-            console.log("Response", playlistItemResponse);
-            }
-    
-            return playlistId; // Return the playlist ID if needed
-        } catch (err) {
-            console.error("Execute error", err);
-            throw err; // Propagate the error for better error handling
-        }
-        }
-    
-        gapi.load("client:auth2", function () {
-        gapi.auth2.init({
-            client_id: "532965186327-qcbbpaehlsc3m7h6ll5ephqiqs8lh7vu.apps.googleusercontent.com",
-            plugin_name: "name",
-        });
-        });
-    </script>
 
     <!--  contact section just because looks nice -->
     <div style="background: linear-gradient(90deg, rgba(29,29,29,1) 0%, rgba(67,67,67,1) 37%, rgba(61,61,61,1) 51%, rgba(61,61,61,1) 57%, rgba(59,59,59,1) 62%, rgba(40,40,40,1) 70%, rgba(32,32,32,1) 79%, rgba(30,30,30,1) 89%, rgba(27,27,27,1) 100%);">
@@ -291,14 +144,14 @@
                     <form action="" target="_blank" style="padding: 0 16px;"> 
                         <div class="w3-row-padding" style="margin:0 -16px 8px -16px">
                             <div class="w3-half">
-                                <input class="w3-input w3-border" type="text" placeholder="Name" required name="Name" style="margin-bottom: 8px;">
+                                <input class="w3-input" type="text" placeholder="Name" required name="Name" style="border: none; border-bottom: 1px solid #ffffff; outline: none; background: transparent; color: #ffffff;">
                             </div>
                             <div class="w3-half">
-                                <input class="w3-input w3-border" type="text" placeholder="Email" required name="Email" style="margin-bottom: 8px;">
+                                <input class="w3-input" type="text" placeholder="Email" required name="Email" style="border: none; border-bottom: 1px solid #ffffff; outline: none; background: transparent; color: #ffffff;">
                             </div>
                         </div>
-                        <input class="w3-input w3-border" type="text" placeholder="Message" required name="Message" style="margin-bottom: 16px;">
-                        <button class="w3-button w3-white w3-text-black w3-right" type="submit">SEND</button>
+                        <input class="w3-input" type="text" placeholder="Message" required name="Message" style="border: none; border-bottom: 1px solid #ffffff; outline: none; background: transparent; color: #ffffff;">
+                        <button class="w3-button w3-white w3-text-black w3-right" type="submit" style="padding: 10px 20px;">SEND</button>
                     </form>
                 </div>
             </div>
@@ -315,8 +168,111 @@
     <!-- end of big div -->
 </div>
 
+<script src="https://apis.google.com/js/api.js"></script>
 
 <script>
+    async function convertAndExecute() {
+    const playlistLink = document.getElementById('playlistLink').value;
+    const playlistName = document.getElementById('playlistName').value;
+
+    //get playlist id from link
+    const playlistIdMatch = playlistLink.match(/playlist\/(\w+)/);
+    const spPlaylistId = playlistIdMatch ? playlistIdMatch[1] : null;
+
+    if (!spPlaylistId) {
+    alert('Invalid Spotify Playlist Link');
+    return;
+    }
+
+    try {
+    //make a request
+    const response = await fetch('/convert', {
+        method: 'POST',
+        headers: {
+        'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ spPlaylistId }),
+    });
+
+    if (!response.ok) {
+        throw new Error(`Server returned status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    const videoIds = data.videoIds;
+
+    await authenticate();
+    await loadClient();
+    const playlistId = await execute(playlistName, videoIds);
+
+    console.log('Video IDs:', videoIds);
+    } catch (error) {
+    console.error('Error:', error);
+    alert('An error occurred. Please check the console for details.');
+    }
+}
+
+
+    document.getElementById('convertButton').addEventListener('click', convertAndExecute);
+
+    function authenticate() {
+    return gapi.auth2.getAuthInstance()
+        .signIn({ scope: "https://www.googleapis.com/auth/youtube.force-ssl" });
+    }
+
+    function loadClient() {
+    gapi.client.setApiKey("AIzaSyAvgCn9p__sDlixaKr2Yu2RTLsTGVHyZBg");
+    return gapi.client.load("https://www.googleapis.com/discovery/v1/apis/youtube/v3/rest");
+    }
+
+    async function execute(title, videoIds) {
+    try {
+        const playlistResponse = await gapi.client.youtube.playlists.insert({
+        "part": ["snippet"],
+        "resource": {
+            "snippet": {
+            "title": title
+            }
+        }
+        });
+
+        const playlistId = playlistResponse.result.id;
+        console.log(`Playlist created with ID: ${playlistId}`);
+
+        for (const videoId of videoIds) {
+        const playlistItemResponse = await gapi.client.youtube.playlistItems.insert({
+            "part": ["snippet"],
+            "resource": {
+            "snippet": {
+                "playlistId": playlistId,
+                "position": 0,
+                "resourceId": {
+                "kind": "youtube#video",
+                "videoId": videoId
+                }
+            }
+            }
+        });
+
+        console.log(`Video ${videoId} added to the playlist`);
+        // Handle the results here if needed
+        console.log("Response", playlistItemResponse);
+        }
+
+        return playlistId; // Return the playlist ID if needed
+    } catch (err) {
+        console.error("Execute error", err);
+        throw err; // Propagate the error for better error handling
+    }
+    }
+
+    gapi.load("client:auth2", function () {
+    gapi.auth2.init({
+        client_id: "532965186327-qcbbpaehlsc3m7h6ll5ephqiqs8lh7vu.apps.googleusercontent.com",
+        plugin_name: "name",
+    });
+    });
+
     //inline js because of this username value
     var username = '<%= username %>'; 
 
@@ -325,7 +281,49 @@
     } else {
         document.getElementById("viewAccountsLink").style.display = "none";
     }
+
+
+    $(document).ready(function () {
+        function performSearch() {
+            var songName = $('#songName').val();
+            var artist = $('#artist').val();
+
+            if (!songName && !artist) {
+                //use ajax to request songs
+                $.ajax({
+                    type: 'GET',
+                    url: '/all-songs', 
+                    success: function (data) {
+                        $('#songList').html(data);
+                    },
+                    error: function (error) {
+                        console.error('Error retrieving all songs:', error);
+                    }
+                });                   
+            }
+
+            $.ajax({
+                type: 'GET',
+                url: '/search', 
+                data: { songName: songName, artist: artist },
+                success: function (data) {
+                    $('#songList').html(data);
+                },
+                error: function (error) {
+                    console.error('Error performing search:', error);
+                }
+            });
+        }
+
+        $('#songName, #artist').on('input', function () {
+            performSearch();
+        });
+
+        performSearch();
+    });
+
 </script>
+
 
 
 <script src="/js/scripts.js"> </script>

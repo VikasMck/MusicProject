@@ -54,21 +54,32 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", sans-serif}
   </header>
   
   <!-- favourite songs -->
-  <div class="w3-row-padding">
-    <% for (let i = 0; i < personalSongs.length; i++) { %>
-      <div class="w3-third w3-container w3-margin-bottom">
-        <img src="<%= personalSongs[i].songimage %>" alt="<%= personalSongs[i].alt %>" style="width: 100%; display: block; margin: 0 auto;">
-        <div class="w3-container w3-white">
-          <p style="word-wrap: break-word;"><%= personalSongs[i].songtitle %></p>
-          <p style="word-wrap: break-word;"><%= personalSongs[i].songauthor %></p>
-          <button class="w3-btn w3-round w3-black" onclick="unfavorite('<%= personalSongs[i].songtitle %>', '<%= personalSongs[i].songauthor %>')">Unfavorite</button>
-        </div>
+<div class="w3-row-padding">
+  <% if (personalSongs.length === 0) { %>
+      <div class="w3-container w3-padding-16 w3-text-grey">
+          <p><i>No favorite songs added yet.</i></p>
       </div>
-      <% if ((i + 1) % 6 === 0) { %>
-        </div><div class="w3-row-padding">
+  <% } 
+  else { %>
+      <% for (let i = 0; i < personalSongs.length; i++) { %>
+          <div class="w3-third w3-container w3-margin-bottom">
+              <img src="<%= personalSongs[i].songimage %>" alt="<%= personalSongs[i].alt %>" style="width: 100%; display: block; margin: 0 auto;">
+              <div class="w3-container w3-white">
+                  <p style="word-wrap: break-word;"><%= personalSongs[i].songtitle %></p>
+                  <p style="word-wrap: break-word;"><%= personalSongs[i].songauthor %></p>
+                  <div class="w3-container w3-padding w3-text-center" style="margin-bottom: 20px; display: flex; justify-content: center; align-items: center;">
+                      <button class="w3-btn w3-round w3-black" onclick="unfavorite('<%= personalSongs[i].songtitle %>', '<%= personalSongs[i].songauthor %>')">
+                          Unfavorite
+                      </button>
+                  </div>
+              </div>
+          </div>
+          <% if ((i + 1) % 6 === 0) { %>
+              </div><div class="w3-row-padding">
+          <% } %>
       <% } %>
-    <% } %>
-  </div>
+  <% } %>
+</div>
   
   <!-- page -->
   <div class="w3-center w3-padding-32">
@@ -107,7 +118,7 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", sans-serif}
 </div>
 
 
-<div id="deleteModal" class="w3-modal">
+<div id="deleteModal" class="w3-modal" onclick="closeDeleteModal(event)">
   <div class="w3-modal-content w3-animate-zoom" style="position: relative; background-color: #fefefe; margin: 10% auto; padding: 20px; border: 1px solid #888; width: 50%; box-shadow: 0 4px 8px rgba(0,0,0,0.1); border-radius: 8px;">
     <div class="w3-container w3-teal" style="padding: 15px; color: #fff; border-bottom: 1px solid #ddd;">
       <h2>Are you sure?</h2>
@@ -127,17 +138,15 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", sans-serif}
 
 
 <script>
-  //I have no idea why I need this here, it didnt work inside the scripts.js
-  var deleteModal = document.getElementById('deleteModal');
-  window.onclick = function(event) {
-    if (event.target == deleteModal) {
-        deleteModal.style.display = "none";
-      }
-  }
-
   function openDeleteModal() {
-    document.getElementById('deleteModal').style.display = 'block';
+  document.getElementById('deleteModal').style.display = 'block';
+}
+
+function closeDeleteModal(event) {
+  if (event.target === document.getElementById('deleteModal')) {
+    document.getElementById('deleteModal').style.display = 'none';
   }
+}
 
   //delay timer for ajax request
   var delayTimer;
@@ -159,7 +168,8 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", sans-serif}
             deleteButton.style.backgroundColor = 'red';
             deleteButton.style.pointerEvents = 'auto';
             deleteButton.style.cursor = 'pointer';
-          } else {
+          } 
+          else {
             //instead of an alert make it look nice
             messageContainer.innerHTML = '<div class="w3-text-red">Username does not match.</div>';
             var deleteButton = document.getElementById('deleteButton');
