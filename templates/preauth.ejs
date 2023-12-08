@@ -225,13 +225,13 @@
         }
     
         function loadClient() {
-        gapi.client.setApiKey("AIzaSyCoGmWZBade3HK3TI7OahDUi7mpkZNtyyM");
+        gapi.client.setApiKey("AIzaSyAvgCn9p__sDlixaKr2Yu2RTLsTGVHyZBg");
         return gapi.client.load("https://www.googleapis.com/discovery/v1/apis/youtube/v3/rest");
         }
     
         async function execute(title, videoIds) {
         try {
-            // Step 1: Create the playlist
+            //creates the playlist
             const playlistResponse = await gapi.client.youtube.playlists.insert({
             "part": ["snippet"],
             "resource": {
@@ -244,7 +244,7 @@
             const playlistId = playlistResponse.result.id;
             console.log(`Playlist created with ID: ${playlistId}`);
     
-            // Step 2: Add videos to the playlist
+            //adds videos to the playlist
             for (const videoId of videoIds) {
             const playlistItemResponse = await gapi.client.youtube.playlistItems.insert({
                 "part": ["snippet"],
@@ -274,7 +274,7 @@
     
         gapi.load("client:auth2", function () {
         gapi.auth2.init({
-            client_id: "953631011576-u675406ekfjfqkj5obk4pjpv3c4lu07q.apps.googleusercontent.com",
+            client_id: "532965186327-qcbbpaehlsc3m7h6ll5ephqiqs8lh7vu.apps.googleusercontent.com",
             plugin_name: "name",
         });
         });
