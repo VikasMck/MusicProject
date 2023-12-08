@@ -4,7 +4,8 @@ function myFunction() {
   var x = document.getElementById("navDemo");
   if (x.className.indexOf("w3-show") == -1) {
     x.className += " w3-show";
-  } else { 
+  } 
+  else { 
     x.className = x.className.replace(" w3-show", "");
   }
 }
@@ -34,9 +35,7 @@ function w3_close() {
   document.getElementById("myOverlay").style.display = "none";
 }
 
-// Add this JavaScript function
 function addToFavorites(songTitle, songAuthor, songImage) {
-  // Make an AJAX request to your server to add the song to favorites
   fetch('/favorite', {
     method: 'POST',
     headers: {
@@ -47,8 +46,11 @@ function addToFavorites(songTitle, songAuthor, songImage) {
   .then(response => {
     if (response.ok) {
       console.log('Song added to favorites!');
-    } else {
+      alert('Song added to favorites!');
+    } 
+    else {
       console.error('Failed to add song to favorites');
+      alert('Song already added to favorites!');
     }
   })
   .catch(error => {
@@ -56,9 +58,8 @@ function addToFavorites(songTitle, songAuthor, songImage) {
   });
 }
 
-// Function to remove a song from favorites
+
 function unfavorite(songTitle, songAuthor) {
-  // Make an AJAX request to your server to remove the song from favorites
   fetch('/unfavorite', {
     method: 'POST',
     headers: {
@@ -69,9 +70,8 @@ function unfavorite(songTitle, songAuthor) {
   .then(response => {
     if (response.ok) {
       console.log('Song removed from favorites!');
-      // Optionally, you can update the UI to reflect the removal
-      // For example, you can remove the corresponding HTML element
-    } else {
+    } 
+    else {
       console.error('Failed to remove song from favorites');
     }
   })
