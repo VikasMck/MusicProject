@@ -611,18 +611,15 @@ async function getVideoIds(ytApiKey, videos) {
 }
 
 function addOrUpdateSong(allSongs, formattedSongTitle, formattedSongAuthor, songImage) {
-  // Check if an object with the same title and author already exists
   const existingSongIndex = allSongs.findIndex(song => song.songtitle === formattedSongTitle && song.songauthor === formattedSongAuthor);
 
   if (existingSongIndex !== -1) {
-    // Object with the same title and author already exists, you can choose to skip or update
     console.log(`Song with title '${formattedSongTitle}' and author '${formattedSongAuthor}' already exists.`);
-    // You can update the existing entry here if needed
   } else {
-    // Object does not exist, push the new entry
+    
     allSongs.push({
       src: songImage,
-      alt: 'Photo', // You can customize this if needed
+      alt: 'Photo', 
       songtitle: formattedSongTitle,
       songauthor: formattedSongAuthor,
     });
@@ -719,7 +716,7 @@ app.post('/unfavorite', async (req, res) => {
       if (deleteResult.rowsAffected.length > 0) {
         await updatePersonalSongs(username);
 
-        res.status(200).json({ success: true, message: 'Song removed from favorites successfully' });
+        res.status(200).json({ success: true, message: 'Song removed from favorites successfully'});
       } else {
         res.status(500).json({ success: false, message: 'Failed to remove the song from favorites' });
       }

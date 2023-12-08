@@ -68,10 +68,10 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", sans-serif}
                   <p style="word-wrap: break-word;"><%= personalSongs[i].songtitle %></p>
                   <p style="word-wrap: break-word;"><%= personalSongs[i].songauthor %></p>
                   <div class="w3-container w3-padding w3-text-center" style="margin-bottom: 20px; display: flex; justify-content: center; align-items: center;">
-                      <button class="w3-btn w3-round w3-black" onclick="unfavorite('<%= personalSongs[i].songtitle %>', '<%= personalSongs[i].songauthor %>')">
-                          Unfavorite
-                      </button>
-                  </div>
+                    <button class="w3-btn w3-round w3-black" onclick="unfavoriteAndReload('<%= personalSongs[i].songtitle %>', '<%= personalSongs[i].songauthor %>')">
+                        Unfavorite
+                    </button>
+                </div>
               </div>
           </div>
           <% if ((i + 1) % 6 === 0) { %>
@@ -135,6 +135,16 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", sans-serif}
     </div>
   </div>
 </div>
+
+<script>
+  function unfavoriteAndReload(songTitle, songAuthor) {
+    unfavorite(songTitle, songAuthor);
+  
+    setTimeout(function() {
+    location.reload();
+    }, 800);
+  }
+  </script>
 
 
 <script>
