@@ -134,6 +134,7 @@ app.post('/register', async (req, res) => {
     console.log(checkTableQuery)
     console.log(tableCheckResults)
 
+    //create the table each time user creates an account
     if (tableExistsCount === 0) {
       const createTableQuery = `
         create table ${username}_basket (
@@ -225,6 +226,13 @@ app.post('/forgotuser', async (req, res) => {
     await connectToDatabase();
     const result = await sql.query`UPDATE Users SET username = ${username} WHERE email = ${email}`;
 
+    //change basket name
+    const updateTableQuery = `sp_rename '${req.session.username}_basket', '${username}_basket';`;
+    await sql.query(updateTableQuery);
+    console.log('Table name updated successfully.');
+
+    req.session.username = username;
+
     if (result.rowsAffected[0] > 0) {
       console.log('Username updated successfully.');
       res.redirect('/afterauth');
@@ -281,6 +289,7 @@ app.post('/updateprofile', async (req, res) => {
     try {
       await connectToDatabase();
 
+      //change image
       if (userimage !== undefined && userimage !== '') {
         const result = await sql.query`UPDATE Users SET userimage = ${userimage} WHERE email = ${req.session.email}`;
         if (result.rowsAffected[0] > 0) {
@@ -290,13 +299,22 @@ app.post('/updateprofile', async (req, res) => {
       }
 
       if (username !== undefined && username !== '') {
-        const result = await sql.query`UPDATE Users SET username = ${username} WHERE email = ${req.session.email}`;
-        if (result.rowsAffected[0] > 0) {
-          req.session.username = username;
+        const resultUsername = await sql.query`UPDATE Users SET username = ${username} WHERE email = ${req.session.email}`;
+        if (resultUsername.rowsAffected[0] > 0) {
           console.log('Username updated successfully.');
+
+          //change basket name
+          const updateTableQuery = `sp_rename '${req.session.username}_basket', '${username}_basket';`;
+          await sql.query(updateTableQuery);
+          console.log('Table name updated successfully.');
+
+          req.session.username = username;
+
+
         }
       }
 
+      //change email
       if (email !== undefined && email !== '') {
         const result = await sql.query`UPDATE Users SET email = ${email} WHERE email = ${req.session.email}`;
         if (result.rowsAffected[0] > 0) {
@@ -305,6 +323,7 @@ app.post('/updateprofile', async (req, res) => {
         }
       }
 
+      //change bio
       if (bio !== undefined && bio !== '') {
         const result = await sql.query`UPDATE Users SET Bio = ${bio} WHERE username = ${req.session.username}`;
         if (result.rowsAffected[0] > 0) {
@@ -313,6 +332,7 @@ app.post('/updateprofile', async (req, res) => {
         }
       }
 
+      //change pass
       if (password !== undefined && password !== '') {
         const hashedPassword = await hashPassword(password);
 
@@ -341,46 +361,54 @@ app.post('/updateprofile', async (req, res) => {
 
 
 
-  //way to delete accounts
-  app.get('/delete', async (req, res) => {
 
-    if (req.session.authenticated) {
-      const deletedUsername = req.session.username;
+//way to delete accounts
+app.get('/delete', async (req, res) => {
+  if (req.session.authenticated) {
+    const deletedUsername = req.session.username;
 
-      try {
-        await sql.connect(config);
+    try {
+      await sql.connect(config);
 
-        const result = await sql.query`DELETE FROM users WHERE username = ${deletedUsername}`;
+      //delete the user from table
+      const deleteResult = await sql.query`DELETE FROM users WHERE username = ${deletedUsername}`;
 
-        if (result.rowsAffected[0] > 0) {
-          //destroy the session after deletion
-          req.session.destroy((err) => {
-            if (err) {
-              console.error('Error destroying session:', err);
-              res.status(500).send('Internal Server Error');
-              return;
-            }
+      if (deleteResult.rowsAffected[0] > 0) {
+        //drop table
+        const dropTableQuery = `DROP TABLE ${deletedUsername}_basket`;
+        await sql.query(dropTableQuery);
 
-            res.redirect('/preauth');
-          });
-        } 
-        else {
-          res.status(404).send('User not found');
-        }
-      } 
-      catch (error) {
-        console.error('Error deleting user:', error);
-        res.status(500).send('Internal Server Error');
-      } 
-      finally {
-        await sql.close();
+        //kill session
+        req.session.destroy((err) => {
+          if (err) {
+            console.error('Error destroying session:', err);
+            res.status(500).send('Internal Server Error');
+            return;
+          }
+
+          res.redirect('/preauth');
+        });
+      } else {
+        res.status(404).send('User not found');
       }
-    } else {
-      res.redirect('/login');
+    } 
+    catch (error) {
+      console.error('Error deleting user:', error);
+      res.status(500).send('Internal Server Error');
+    } 
+    finally {
+      await sql.close();
     }
+  } 
+  else {
+    res.redirect('/login');
+  }
 });
 
-//temp 
+
+
+
+//for admin pusposes
 app.get('/read', async (req, res) => {
   if (req.session.authenticated) {
     try {
@@ -417,8 +445,6 @@ app.get('/updateprofile', (req, res) => res.sendFile(path.join(__dirname, 'templ
 
 //this will be appended with personal songs for each indiviual users into a table "{req.session.username}_table"
 const personalSongs = [];
-
-
 
 
 //home after authentication
@@ -495,11 +521,12 @@ app.post('/checkusername', (req, res) => {
   }
 });
 
-
+//logout
 app.get('/logout', (req, res) => {
   req.session.authenticated = false;
   const filePath = path.join(__dirname, 'templates', 'preauth.ejs');
 
+  //clear array when you logout
   personalSongs.length = 0;
 
 
@@ -624,20 +651,6 @@ function addOrUpdateSong(allSongs, formattedSongTitle, formattedSongAuthor, song
       songauthor: formattedSongAuthor,
     });
 
-
-    //Temp
-    // allSongs.push({
-    //   src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Temp_plate.svg/601px-Temp_plate.svg.png',
-    //   alt: 'Photo', // You can customize this if needed
-    //   songtitle: 'title',
-    //   songauthor: 'title',
-    // })
-    // allSongs.push({
-    //   src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Temp_plate.svg/601px-Temp_plate.svg.png',
-    //   alt: 'Photo', // You can customize this if needed
-    //   songtitle: 'title1',
-    //   songauthor: 'title1',
-    // })
   }
 }
 
@@ -729,7 +742,7 @@ app.post('/unfavorite', async (req, res) => {
   }
 });
 
-
+//search function
 function handleSearch(req, res, viewName) {
   const { songName, artist } = req.query;
 
@@ -753,7 +766,7 @@ app.get('/all-songs', (req, res) => {
   res.json({ allSongs });
 });
 
-
+//convert api
 app.post('/convert', async (req, res) => {
   try {
     const spClientId = process.env.SP_CLIENT_ID;

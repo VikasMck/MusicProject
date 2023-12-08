@@ -24,7 +24,7 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", sans-serif}
     <a href="#" onclick="w3_close()" class="w3-hide-large w3-right w3-jumbo w3-padding w3-hover-grey" title="close menu">
       <i class="fa fa-remove"></i>
     </a>
-    <img src="<%= userimage %>" style="width: 50%;" class="w3-round"><br><br>
+    <img src="<%= userimage ? userimage : 'https://cdn-icons-png.flaticon.com/512/1057/1057231.png' %>" style="width: 50%;" class="w3-round"><br><br>
     <h4><b> <%= username.toUpperCase() %></b></h4>
   </div>
   <div class="w3-bar-block">
@@ -120,7 +120,7 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", sans-serif}
 
 <div id="deleteModal" class="w3-modal" onclick="closeDeleteModal(event)">
   <div class="w3-modal-content w3-animate-zoom" style="position: relative; background-color: #fefefe; margin: 10% auto; padding: 20px; border: 1px solid #888; width: 50%; box-shadow: 0 4px 8px rgba(0,0,0,0.1); border-radius: 8px;">
-    <div class="w3-container w3-teal" style="padding: 15px; color: #fff; border-bottom: 1px solid #ddd;">
+    <div class="w3-container w3-grey" style="padding: 15px; color: #fff; border-bottom: 1px solid #ddd;">
       <h2>Are you sure?</h2>
     </div>
     <div class="w3-container" style="padding: 20px;">
@@ -144,10 +144,7 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", sans-serif}
     location.reload();
     }, 800);
   }
-  </script>
-
-
-<script>
+  
   function openDeleteModal() {
   document.getElementById('deleteModal').style.display = 'block';
 }

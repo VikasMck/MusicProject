@@ -225,7 +225,7 @@
     }
 
     function loadClient() {
-    gapi.client.setApiKey("AIzaSyAvgCn9p__sDlixaKr2Yu2RTLsTGVHyZBg");
+    gapi.client.setApiKey("AIzaSyAvgCn9p__sDlixaKr2Yu2RTLsTGVHyZBg"); //hardcoded api, dont use without letting me or eric know
     return gapi.client.load("https://www.googleapis.com/discovery/v1/apis/youtube/v3/rest");
     }
 
@@ -259,20 +259,20 @@
         });
 
         console.log(`Video ${videoId} added to the playlist`);
-        // Handle the results here if needed
         console.log("Response", playlistItemResponse);
         }
 
-        return playlistId; // Return the playlist ID if needed
-    } catch (err) {
+        return playlistId; 
+    } 
+    catch (err) {
         console.error("Execute error", err);
-        throw err; // Propagate the error for better error handling
+        throw err; 
     }
     }
 
     gapi.load("client:auth2", function () {
     gapi.auth2.init({
-        client_id: "532965186327-qcbbpaehlsc3m7h6ll5ephqiqs8lh7vu.apps.googleusercontent.com",
+        client_id: "532965186327-qcbbpaehlsc3m7h6ll5ephqiqs8lh7vu.apps.googleusercontent.com", //hardcoded api, dont use without letting me or eric know
         plugin_name: "name",
     });
     });

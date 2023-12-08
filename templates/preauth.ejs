@@ -239,7 +239,7 @@
         }
     
         function loadClient() {
-        gapi.client.setApiKey("AIzaSyAvgCn9p__sDlixaKr2Yu2RTLsTGVHyZBg");
+        gapi.client.setApiKey("AIzaSyAvgCn9p__sDlixaKr2Yu2RTLsTGVHyZBg"); //hardcoded api, dont use without letting me or eric know
         return gapi.client.load("https://www.googleapis.com/discovery/v1/apis/youtube/v3/rest");
         }
     
@@ -287,7 +287,7 @@
     
         gapi.load("client:auth2", function () {
         gapi.auth2.init({
-            client_id: "532965186327-qcbbpaehlsc3m7h6ll5ephqiqs8lh7vu.apps.googleusercontent.com",
+            client_id: "532965186327-qcbbpaehlsc3m7h6ll5ephqiqs8lh7vu.apps.googleusercontent.com", //hardcoded api, dont use without letting me or eric know
             plugin_name: "name",
         });
         });
